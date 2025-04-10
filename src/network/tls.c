@@ -4,9 +4,7 @@
 
 */
 
-#include <openssl/ssl.h>
-#include <openssl/bio.h>
-#include <openssl/err.h>
+#include "../../include/tls.h"
 #include <err.h>
 
 /*
@@ -66,7 +64,7 @@ SSL_CTX *create_ssl_server_context(char *certificate_file_path, char *private_ke
     int cache_id = 1;
 
     /* Setup a secure socket layer session cache to reduce latency during handshakes. */
-    SSL_CTX_set_session_id(ssl_context, (void *) cache_id, sizeof(cache_id));
+    SSL_CTX_set_session_id_context(ssl_context, (void *) cache_id, sizeof(cache_id));
     SSL_CTX_set_session_cache_mode(ssl_context, SSL_SESS_CACHE_SERVER);
     SSL_CTX_sess_set_cache_size(ssl_context, session_cache_length);
     SSL_CTX_set_timeout(ssl_context, session_timeout_duration);
