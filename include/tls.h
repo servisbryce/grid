@@ -1,6 +1,6 @@
 /*
 
-    We aim to provide accessible functions for server-side and client-side networking in Transport Layer Security.
+    We aim to provide accessible functions for server-side and client-side networking in transport layer security.
 
 */
 
