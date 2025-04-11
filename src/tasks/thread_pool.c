@@ -42,6 +42,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
         /* If we've reached this section of the worker, we have an available thread task. Mark to the thread pool that we're busy and taking on a task. */
         thread_task_t *thread_task = (thread_task_t *) thread_pool->thread_task_head_available;
         thread_pool->thread_task_head_available = thread_pool->thread_task_head_available->next;
+        pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
         pthread_mutex_lock(&(thread_pool->thread_inactive_threads_mutex));
         thread_pool->inactive_threads--;
         pthread_mutex_unlock(&(thread_pool->thread_inactive_threads_mutex));
@@ -53,10 +54,10 @@ void *thread_worker(void *thread_worker_vargs_p) {
         if (thread_task) {
 
             /* Execute the function. The function then shall return the same thread task structure but with the return buffer pointer and length set. */
-            thread_task = (thread_task_t *) thread_task->routine((void *) thread_task);
-            pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
+            thread_task->routine((void *) thread_task);
 
             /* If the thread task head is marked as null, we'll set it here. Otherwise, push the thread task head. */
+            pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
             if (!thread_pool->thread_task_head_completed) {
 
                 thread_pool->thread_task_head_completed = thread_task;
@@ -69,35 +70,39 @@ void *thread_worker(void *thread_worker_vargs_p) {
                     thread_task_tail_completed = thread_task_tail_completed->next;
 
                 }
-
+        
                 thread_task_tail_completed->next = thread_task;
+                thread_task->next = NULL;
 
             }
 
-            /* Mark this thread as available once the task has been executed successfully. */
             pthread_mutex_unlock(&(thread_pool->thread_task_head_completed_mutex));
-            pthread_mutex_lock(&(thread_pool->thread_inactive_threads_mutex));
-            pthread_mutex_lock(&(thread_pool->thread_active_threads_mutex));
-            thread_pool->inactive_threads++;
-            thread_pool->active_threads--;
-            if (!thread_pool->halt && thread_pool->active_threads == 0 && !thread_pool->thread_task_head_available) {
-
-                pthread_cond_signal(&(thread_pool->thread_active_threads_condition));
-
-            }
-
-            pthread_mutex_unlock(&(thread_pool->thread_inactive_threads_mutex));
-            pthread_mutex_unlock(&(thread_pool->thread_active_threads_mutex));
 
         }
+
+        /* Mark this thread as available once the task has been executed successfully. */
+        pthread_mutex_lock(&(thread_pool->thread_inactive_threads_mutex));
+        thread_pool->inactive_threads++;
+        pthread_mutex_unlock(&(thread_pool->thread_inactive_threads_mutex));
+        pthread_mutex_lock(&(thread_pool->thread_active_threads_mutex));
+        thread_pool->active_threads--;
+        pthread_mutex_unlock(&(thread_pool->thread_active_threads_mutex));
+        pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
+        if (!thread_pool->halt && thread_pool->active_threads == 0 && !thread_pool->thread_task_head_available) {
+        
+            pthread_cond_signal(&(thread_pool->thread_active_threads_condition));
+        
+        }
+        
+        pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
 
     }
 
     /* Tell the thread pool that this thread is being removed from the pool because it's reached the end of its life. */
     pthread_mutex_lock(&(thread_pool->thread_inactive_threads_mutex));
     thread_pool->inactive_threads--;
-    pthread_cond_signal(&(thread_pool->thread_active_threads_condition));
     pthread_mutex_unlock(&(thread_pool->thread_inactive_threads_mutex));
+    pthread_cond_signal(&(thread_pool->thread_active_threads_condition));
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
     return NULL;
 
@@ -142,5 +147,42 @@ thread_pool_t *create_thread_pool(size_t inactive_threads) {
     }
 
     return thread_pool;
+
+}
+
+thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routine)(void *routine_vargs_p), void *routine_vargs_p) {
+
+    /* Ensure that our function parameters are valid. */
+    if (!thread_pool || thread_pool->halt || !routine) {
+
+        return NULL;
+
+    }
+
+    thread_task_t *thread_task = (thread_task_t *) malloc(sizeof(thread_task_t));
+    thread_task->next = NULL;
+    thread_task->routine = routine;
+    thread_task->routine_vargs_p = routine_vargs_p;
+    pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
+    if (!thread_pool->thread_task_head_available) {
+
+        thread_pool->thread_task_head_available = thread_task;
+
+    } else {
+
+        thread_task_t *thread_task_tail_available = thread_pool->thread_task_head_available;
+        while (thread_task_tail_available->next) {
+
+            thread_task_tail_available = thread_task_tail_available->next;
+
+        }
+
+        thread_task_tail_available->next = thread_task;
+
+    }
+
+    pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
+    pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
+    return thread_task;
 
 }
