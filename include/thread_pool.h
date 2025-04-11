@@ -48,3 +48,6 @@ typedef struct thread_pool {
     bool halt;
 
 } thread_pool_t;
+
+/* This function creates a thread pool structure and creates a specified set of thread workers. */
+thread_pool_t *create_thread_pool(size_t inactive_threads);
