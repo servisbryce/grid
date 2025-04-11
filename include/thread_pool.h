@@ -16,8 +16,14 @@
 typedef struct thread_task {
 
     struct thread_task *next;
+
+    /* Here we define the routine call and arguments. */
     void *(*routine)(void *routine_vargs_p);
     void *routine_vargs_p;
+
+    /* Here we define the buffer where the return value from a routine is stored. */
+    size_t routine_return_buffer_length;
+    void *routine_return_buffer_p;
 
 } thread_task_t;
 
@@ -31,10 +37,12 @@ typedef struct thread_pool {
 
     pthread_mutex_t thread_inactive_threads_mutex;
     pthread_mutex_t thread_active_threads_mutex;
-    pthread_mutex_t thread_task_head_mutex;
+    pthread_mutex_t thread_task_head_available_mutex;
+    pthread_mutex_t thread_task_head_completed_mutex;
     pthread_cond_t thread_task_head_condition;
     pthread_cond_t thread_active_threads_condition;
-    thread_task_t *thread_task_head;
+    thread_task_t *thread_task_head_available;
+    thread_task_t *thread_task_head_completed;
     size_t inactive_threads;
     size_t active_threads;
     bool halt;
