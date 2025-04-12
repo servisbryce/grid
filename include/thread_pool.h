@@ -7,12 +7,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-/*
-
-    This structure defines a task which will be plucked from the thread pool and executed.
-
-*/
-
+/* This structure defines a task which will be plucked from the thread pool and executed. */
 typedef struct thread_task {
 
     struct thread_task *next;
@@ -27,12 +22,7 @@ typedef struct thread_task {
 
 } thread_task_t;
 
-/*
-
-    This structure defines a thread pool. The various mutexes and conditions are defined here along with the statuses of the thread pool.
-
-*/
-
+/* This structure defines a thread pool. The various mutexes and conditions are defined here along with the statuses of the thread pool. */
 typedef struct thread_pool {
 
     pthread_mutex_t thread_inactive_threads_mutex;
@@ -51,4 +41,6 @@ typedef struct thread_pool {
 
 /* This function creates a thread pool structure and creates a specified set of thread workers. */
 thread_pool_t *create_thread_pool(size_t inactive_threads);
+
+/* This function creates a facility for the program to insert tasks into the available task queue for a thread pool. */
 thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routine)(void *routine_vargs_p), void *routine_vargs_p);

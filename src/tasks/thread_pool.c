@@ -7,12 +7,7 @@
 #include "../../include/thread_pool.h"
 #include <stdlib.h>
 
-/*
-
-    Define the thread worker function which envelopes the logic for each thread.
-
-*/
-
+/* Define the thread worker function which envelopes the logic for each thread. */
 void *thread_worker(void *thread_worker_vargs_p) {
 
     if (!thread_worker_vargs_p) {
@@ -108,12 +103,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
 
 }
 
-/*
-
-    We aim to create the structure defined in the corresponding thread pool and threads.
-
-*/
-
+/* We aim to create the structure defined in the corresponding thread pool and threads. */
 thread_pool_t *create_thread_pool(size_t inactive_threads) {
 
     /* Ensure that our function parameters are valid. */
@@ -150,12 +140,7 @@ thread_pool_t *create_thread_pool(size_t inactive_threads) {
 
 }
 
-/*
-
-    We aim to create a function that allows the program to insert tasks into the thread pool available task queue.
-
-*/
-
+/* We aim to create a function that allows the program to insert tasks into the thread pool available task queue. */
 thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routine)(void *routine_vargs_p), void *routine_vargs_p) {
 
     /* Ensure that our function parameters are valid. */
@@ -197,12 +182,7 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
 
 }
 
-/*
-
-    We aim to create a function that locks the program until all available tasks are completed. 
-
-*/
-
+/* We aim to create a function that locks the program until all available tasks are completed. */
 int thread_pool_wait(thread_pool_t *thread_pool) {
 
     /* Ensure all function parameters are valid. */
