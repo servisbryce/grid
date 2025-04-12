@@ -7,12 +7,7 @@
 #include "../../include/tls.h"
 #include <err.h>
 
-/*
-
-    Create a secure socket layer context intended to be used on the server-side.
-
-*/
-
+/* Create a secure socket layer context intended to be used on the server-side. */
 SSL_CTX *create_ssl_server_context(char *certificate_file_path, char *private_key_file_path) {
 
     /* Prevent any null parameters from being passed. */
@@ -77,12 +72,7 @@ SSL_CTX *create_ssl_server_context(char *certificate_file_path, char *private_ke
 
 }
 
-/*
-
-    Create a secure socket layer context intended to be used on the server-side.
-
-*/
-
+/* Create a secure socket layer context intended to be used on the server-side. */
 SSL_CTX *create_ssl_client_context(char *certificate_file_path, char *private_key_file_path) {
 
     /* Prevent any null parameters from being passed. */

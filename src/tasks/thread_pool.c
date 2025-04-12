@@ -213,3 +213,74 @@ int thread_pool_wait(thread_pool_t *thread_pool) {
     return 0;
 
 }
+
+/* This function creates a facility to destroy the thread pool structure in a memory-safe manner. */
+int thread_pool_destroy(thread_pool_t *thread_pool) {
+
+    /* Ensure our function parameters are valid. */
+    if (!thread_pool) {
+
+        return -1;
+
+    }
+
+    /* Search through all of our available and completed tasks, unallocate them, and destroy them. */
+    pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
+    pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
+    thread_task_t *previous_available_task = NULL;
+    thread_task_t *current_available_task = thread_pool->thread_task_head_available;
+    if (previous_available_task) {
+
+        while (previous_available_task->next) {
+
+            previous_available_task = current_available_task;
+            current_available_task = current_available_task->next;
+            free(previous_available_task);
+
+        }
+
+        free(current_available_task);
+
+    }
+
+    thread_task_t *previous_completed_task = NULL;
+    thread_task_t *current_completed_task = thread_pool->thread_task_head_completed;
+    if (current_completed_task) {
+
+        while (current_completed_task->next) {
+
+            previous_completed_task = current_completed_task;
+            current_completed_task = current_completed_task->next;
+            free(previous_completed_task);
+
+        }
+
+        free(current_completed_task);
+
+    }
+
+    /* Halt the thread pool and alert the threads that they've been ordered to terminate.*/
+    thread_pool->thread_task_head_available = NULL;
+    thread_pool->thread_task_head_completed = NULL;
+    thread_pool->halt = true;
+    pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
+    pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
+
+    /* Wait for the threads to terminate. */
+    if (thread_pool_wait(thread_pool) != 0) {
+
+        return -1;
+
+    }
+
+    /* Once the threads have terminated and the thread pool is inactive, immediately destroy all conditions and mutexes used by the thread pool. Then, unallocate the thread pool and return a success code. */
+    pthread_mutex_destroy(&(thread_pool->thread_inactive_threads_mutex));
+    pthread_mutex_destroy(&(thread_pool->thread_active_threads_mutex));
+    pthread_mutex_destroy(&(thread_pool->thread_task_head_available_mutex));
+    pthread_mutex_destroy(&(thread_pool->thread_task_head_completed_mutex));
+    pthread_cond_destroy(&(thread_pool->thread_task_head_condition));
+    pthread_cond_destroy(&(thread_pool->thread_active_threads_condition));
+    free(thread_pool);
+    return 0;
+
+}
