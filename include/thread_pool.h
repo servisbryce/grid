@@ -10,6 +10,7 @@
 /* This structure defines a task which will be plucked from the thread pool and executed. */
 typedef struct thread_task {
 
+    unsigned long identifier;
     struct thread_task *next;
 
     /* Here we define the routine call and arguments. */
@@ -33,6 +34,7 @@ typedef struct thread_pool {
     pthread_cond_t thread_active_threads_condition;
     thread_task_t *thread_task_head_available;
     thread_task_t *thread_task_head_completed;
+    unsigned long tasks_assigned;
     size_t inactive_threads;
     size_t active_threads;
     bool halt;

@@ -151,9 +151,11 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
     }
 
     /* Create and populate the thread task structure. */
+    thread_pool->tasks_assigned++;
     thread_task_t *thread_task = (thread_task_t *) malloc(sizeof(thread_task_t));
     thread_task->next = NULL;
     thread_task->routine = routine;
+    thread_task->identifier = thread_pool->tasks_assigned;
     thread_task->routine_vargs_p = routine_vargs_p;
     pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
 
@@ -244,7 +246,6 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
 
     thread_pool->thread_task_head_available = NULL;
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
-
     pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
     thread_task_t *previous_completed_task = NULL;
     thread_task_t *current_completed_task = thread_pool->thread_task_head_completed;
