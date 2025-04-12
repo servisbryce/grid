@@ -150,6 +150,12 @@ thread_pool_t *create_thread_pool(size_t inactive_threads) {
 
 }
 
+/*
+
+    We aim to create a function that allows the program to insert tasks into the thread pool available task queue.
+
+*/
+
 thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routine)(void *routine_vargs_p), void *routine_vargs_p) {
 
     /* Ensure that our function parameters are valid. */
@@ -191,14 +197,22 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
 
 }
 
+/*
+
+    We aim to create a function that locks the program until all available tasks are completed. 
+
+*/
+
 int thread_pool_wait(thread_pool_t *thread_pool) {
 
+    /* Ensure all function parameters are valid. */
     if (!thread_pool) {
 
         return -1;
 
     }
 
+    /* Deadlock the program while we wait for there to be no more available tasks to complete. */
     pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
     while (1) {
 
@@ -214,6 +228,7 @@ int thread_pool_wait(thread_pool_t *thread_pool) {
 
     }
 
+    /* Unlock the program and return a success code. */
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
     return 0;
 
