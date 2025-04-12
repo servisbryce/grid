@@ -54,7 +54,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
         if (thread_task) {
 
             /* Execute the function. The function then shall return the same thread task structure but with the return buffer pointer and length set. */
-            thread_task->routine((void *) thread_task);
+            thread_task = thread_task->routine((void *) thread_task);
 
             /* If the thread task head is marked as null, we'll set it here. Otherwise, push the thread task head. */
             pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
@@ -159,11 +159,14 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
 
     }
 
+    /* Create and populate the thread task structure. */
     thread_task_t *thread_task = (thread_task_t *) malloc(sizeof(thread_task_t));
     thread_task->next = NULL;
     thread_task->routine = routine;
     thread_task->routine_vargs_p = routine_vargs_p;
     pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
+
+    /* Find the tail of the available task list and make the thread task the new tail. */
     if (!thread_pool->thread_task_head_available) {
 
         thread_pool->thread_task_head_available = thread_task;
@@ -181,8 +184,37 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
 
     }
 
+    /* Alert the program that a new task is available. Then, return the structure. */
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
     pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
     return thread_task;
+
+}
+
+int thread_pool_wait(thread_pool_t *thread_pool) {
+
+    if (!thread_pool) {
+
+        return -1;
+
+    }
+
+    pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
+    while (1) {
+
+        if (thread_pool->thread_task_head_available || (!thread_pool->halt && thread_pool->active_threads != 0) || (thread_pool->halt && (thread_pool->active_threads + thread_pool->inactive_threads) != 0)) {
+
+            pthread_cond_wait(&(thread_pool->thread_active_threads_condition), &(thread_pool->thread_task_head_available_mutex));
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+    pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
+    return 0;
 
 }
