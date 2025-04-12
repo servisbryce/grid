@@ -44,3 +44,9 @@ thread_pool_t *create_thread_pool(size_t inactive_threads);
 
 /* This function creates a facility for the program to insert tasks into the available task queue for a thread pool. */
 thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routine)(void *routine_vargs_p), void *routine_vargs_p);
+
+/* This function creates a facility for the program to wait for all threads in the thread pool to become inactive. */
+int thread_pool_wait(thread_pool_t *thread_pool);
+
+/* This function creates a facility for the program to destroy the thread pool in a memory-safe manner. */
+int thread_pool_destroy(thread_pool_t *thread_pool);

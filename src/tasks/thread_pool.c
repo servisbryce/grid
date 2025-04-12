@@ -226,7 +226,6 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
 
     /* Search through all of our available and completed tasks, unallocate them, and destroy them. */
     pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
-    pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
     thread_task_t *previous_available_task = NULL;
     thread_task_t *current_available_task = thread_pool->thread_task_head_available;
     if (previous_available_task) {
@@ -243,6 +242,10 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
 
     }
 
+    thread_pool->thread_task_head_available = NULL;
+    pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
+
+    pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
     thread_task_t *previous_completed_task = NULL;
     thread_task_t *current_completed_task = thread_pool->thread_task_head_completed;
     if (current_completed_task) {
@@ -259,9 +262,10 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
 
     }
 
-    /* Halt the thread pool and alert the threads that they've been ordered to terminate.*/
-    thread_pool->thread_task_head_available = NULL;
     thread_pool->thread_task_head_completed = NULL;
+    pthread_mutex_unlock(&(thread_pool->thread_task_head_completed_mutex));
+
+    /* Halt the thread pool and alert the threads that they've been ordered to terminate.*/
     thread_pool->halt = true;
     pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
