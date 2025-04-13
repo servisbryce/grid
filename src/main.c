@@ -1,8 +1,10 @@
 #include "../include/thread_pool.h"
 #include "../include/network.h"
 #include "../include/serialization.h"
+#include "../include/base64.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void *print(void *data) {
 
@@ -14,9 +16,9 @@ void *print(void *data) {
 
 void main() {
 
-    net_status_t *a = malloc(sizeof(net_status_t));
-    a->status = true;
-    char *b = serialize_net_status(a);
-    printf("%s\n", b);
+    size_t a_buf = 0;
+    char *msg = "penis\n";
+    char *a = encode(msg, strlen(msg) + 1, &a_buf);
+    printf("%s\n", a);
 
 }
