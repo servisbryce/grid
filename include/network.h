@@ -7,6 +7,9 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
+#include "stddef.h"
+#include "stdbool.h"
+
 /* If you are the worker, you are going to receive this structure in serialized form over the socket. You are to deserialize it and you should find the result to be this structure. */
 typedef struct net_task_request {
 

@@ -7,4 +7,8 @@
 #ifndef SERIALIZATION_H_
 #define SERIALIZATION_H_
 
+#include "network.h"
+
+char *serialize_net_status(net_status_t *net_status);
+
 #endif
