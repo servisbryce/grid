@@ -1,3 +1,9 @@
+/*
+
+    We aim to provide a standalone centralized pool for various network structures.
+
+*/
+
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
