@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* This provides a static set of characters that we're able to lookup to convert our raw binary data into a base 64 encoded string. */
 static const char character_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -62,6 +63,7 @@ char *encode(void *input, size_t input_length, size_t *output_length) {
 
 }
 
+/* We aim to provide a function to decode a base 64 encoded string into any data type. */
 void *decode(char *input, size_t *output_length_p) {
 
     size_t input_length = strlen(input);

@@ -17,8 +17,11 @@ void *print(void *data) {
 void main() {
 
     size_t a_buf = 0;
-    char *msg = "penis\n";
+    char *msg = "test\n";
     char *a = encode(msg, strlen(msg) + 1, &a_buf);
-    printf("%s\n", a);
+
+    size_t b = 0;
+    char *c = (char *) decode(a, &b);
+    printf("%s", c);
 
 }
