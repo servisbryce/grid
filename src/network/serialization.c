@@ -5,6 +5,7 @@
 */
 
 #include "../../include/serialization.h"
+#include "../../include/base64.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,25 +24,27 @@ char *serialize_net_status(net_status_t *net_status) {
 
     }
 
-    /* We need this header to demark what structure we're trying to transmit. */
-    char *structure_header = "net_status_t\n";
-
-    /* Determine what our data payload will be. */
-    char *structure_data = NULL;
+    size_t net_status_length = 0;
+    char *net_status_type = "Type: net_status_t\n";
+    char *net_status_key = "Status: ";
+    char *net_status_value = NULL;
     if (net_status->status) {
 
-        structure_data = "status: success\n";
+        char *net_status_success = "Success.\n";
+        net_status_value = encode(net_status_success, strlen(net_status_success) + 1, &net_status_length);
 
     } else {
 
-        structure_data = "status: failure\n";
+        char *net_status_failure = "Failure.\n";
+        net_status_value = encode(net_status_failure, strlen(net_status_failure) + 1, &net_status_length);
 
     }
 
-    /* Load the data payload into the heap and ship it off to the program. */
-    char *serialized_net_status = (char *) malloc(strlen(structure_header) + strlen(structure_data) + 1);
-    strcpy(serialized_net_status, structure_header);
-    strcat(serialized_net_status, structure_data);
-    return serialized_net_status;
+    char *net_status_transmission = (char *) malloc(strlen(net_status_type) + strlen(net_status_key) + strlen(net_status_value) + 2);
+    strcpy(net_status_transmission, net_status_type);
+    strcat(net_status_transmission, net_status_key);
+    strcat(net_status_transmission, net_status_value);
+    strcat(net_status_transmission, "\n");
+    return net_status_transmission;
 
 }
