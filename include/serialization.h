@@ -10,5 +10,6 @@
 #include "network.h"
 
 char *serialize_net_status(net_status_t *net_status);
+net_status_t *deserialize_net_status(char *serialized_net_status);
 
 #endif

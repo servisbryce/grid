@@ -17,7 +17,10 @@ void *print(void *data) {
 void main() {
 
     net_status_t *a = malloc(sizeof(net_status_t));
-    a->status = true;
-    printf("%s\n", serialize_net_status(a));
+    a->status = false;
+    char *b = serialize_net_status(a);
+    printf("%s\n", b);
+    net_status_t *c = deserialize_net_status(b);
+    printf("%d\n", c->status);
 
 }
