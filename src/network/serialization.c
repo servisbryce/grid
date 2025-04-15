@@ -85,7 +85,8 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
             continue;
 
         }
-        
+
+        /* These two statements are responsible for determining if we're creating a network status structure. If we are, then create it. If not, then just don't do anything. */
         if (strcmp(type, "Type") == 0) {
 
             if (strcmp(value, "net_status_t") == 0) {
@@ -98,6 +99,7 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
         }
 
+        /* These statements are responsible for determining if this line's context is a status. If it is a status, then decode the corresponding value and file out the network status structure. */
         if (strcmp(type, "Status") == 0) {
 
             size_t value_length = 0;
@@ -125,6 +127,7 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
     }
 
+    /* Return the completed structure. */
     return net_status;
 
 }
