@@ -51,20 +51,30 @@ char *serialize_net_status(net_status_t *net_status) {
 
 }
 
+/* We aim to provide a facility to deserialize a serialized network status string. */
 net_status_t *deserialize_net_status(char *serialized_net_status) {
 
+    /* Ensure our input parameters are valid. */
     if (!serialized_net_status) {
 
         return NULL;
 
     }
 
+    /* Create a value where we'll store our object that we're creating. */
     net_status_t *net_status = NULL;
+
+    /* You need to duplicate the string because the string tokenizer modifies the string whenever we perform operations. */
     char *net_status_serialized = strdup(serialized_net_status);
+
+    /* We also need to create a context so that we're able to remember where we are in the string for a given string tokenizer call. */
     char *line_context = NULL;
+
+    /* We're going to loop through every line in the string. */
     char *current_line = strtok_r(net_status_serialized, "\n", &line_context);
     while (current_line != NULL) {
 
+        /* We are going to then seperate each line into their type and value components.*/
         char *type = strtok(current_line, ": ");
         char *value = strtok(NULL, ": ");
         if (strcmp(type, "Type") == 0) {
