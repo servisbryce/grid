@@ -10,12 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-/*
-
-    We aim to provide a facility to serialize a network status structure to an encoded string.
-
-*/
-
+/* We aim to provide a facility to serialize a network status structure to an encoded string. */
 char *serialize_net_status(net_status_t *net_status) {
 
     /* Ensure our input parameters are valid. */
@@ -25,8 +20,11 @@ char *serialize_net_status(net_status_t *net_status) {
 
     }
 
+    /* Assemble the headers. */
     size_t net_status_length = 0;
     char *net_status_type = "Type: net_status_t\n";
+
+    /* Assemble the content key and encoded value. */
     char *net_status_key = "Status: ";
     char *net_status_value = NULL;
     if (net_status->status) {
@@ -41,11 +39,14 @@ char *serialize_net_status(net_status_t *net_status) {
 
     }
 
+    /* Assemble the headers and content into one string. */
     char *serialized_net_status = (char *) malloc(strlen(net_status_type) + strlen(net_status_key) + strlen(net_status_value) + 2);
     strcpy(serialized_net_status, net_status_type);
     strcat(serialized_net_status, net_status_key);
     strcat(serialized_net_status, net_status_value);
     strcat(serialized_net_status, "\n");
+
+    /* Return the value. */
     return serialized_net_status;
 
 }
