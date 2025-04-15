@@ -8,7 +8,6 @@
 #include "../../include/base64.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 /* We aim to provide a facility to serialize a network status structure to an encoded string. */
 char *serialize_net_status(net_status_t *net_status) {

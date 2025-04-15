@@ -9,7 +9,10 @@
 
 #include "network.h"
 
+/* We aim to provide a facility to serialize a network status structure to an encoded string. */
 char *serialize_net_status(net_status_t *net_status);
+
+/* We aim to provide a facility to deserialize a serialized network status string. */
 net_status_t *deserialize_net_status(char *serialized_net_status);
 
 #endif
