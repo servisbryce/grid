@@ -77,6 +77,15 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
         /* We are going to then seperate each line into their type and value components.*/
         char *type = strtok(current_line, ": ");
         char *value = strtok(NULL, ": ");
+
+        /* If there's no valid string for either the type or value, then we'll just iterate to the next line. */
+        if (!type || !value) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
+
+        }
+        
         if (strcmp(type, "Type") == 0) {
 
             if (strcmp(value, "net_status_t") == 0) {
