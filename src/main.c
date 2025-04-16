@@ -35,7 +35,7 @@ void main() {
     a->routine_file = (void *) memory;
     a->routine_file_length = fsize;
     char *b = serialize_net_task_request(a);
-    net_task_request_t *c = deserialize_net_task_request(b);
     printf("%s\n", b);
+    net_task_request_t *c = deserialize_net_task_request(b);
 
 }

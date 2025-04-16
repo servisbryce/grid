@@ -249,6 +249,8 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
             net_task_request->identifier = *decoded_value;
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
 
         }
 
@@ -259,6 +261,8 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
             char *decoded_value = decode(key, &decoded_value_length);
             net_task_request->routine_file_length = decoded_value_length;
             net_task_request->routine_file = (void *) decoded_value;
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
 
         }
 
@@ -269,6 +273,8 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
             char *decoded_value = decode(key, &decoded_value_length);
             net_task_request->routine_file_length = decoded_value_length;
             net_task_request->routine_file = (void *) decoded_value;
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
 
         }
 
