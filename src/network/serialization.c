@@ -99,6 +99,14 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
         }
 
+        /* We need to ensure that the object has been defined first, if not then we may encounter memory issues. */
+        if (!net_status) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
+
+        }
+
         /* These statements are responsible for determining if this line's context is a status. If it is a status, then decode the corresponding value and file out the network status structure. */
         if (strcmp(type, "Status") == 0) {
 
@@ -223,6 +231,14 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
                 continue;
 
             }
+
+        }
+
+        /* We need to ensure that the object has been defined first, if not then we may encounter memory issues. */
+        if (!net_status) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
 
         }
 
