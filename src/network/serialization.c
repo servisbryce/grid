@@ -150,9 +150,14 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
     size_t net_task_request_identifier_value_length = 0;
     char *net_task_request_identifier_value = encode(&net_task_request->identifier, sizeof(net_task_request->identifier), &net_task_request_identifier_value_length);
 
-    /* These two requests are pointers which means we're going to have to copy the data that they point to instead of just copying the pointers. */
+    /* We're going to encode the routine file. */
+    size_t encoded_routine_file_length = 0;
     char *net_task_request_routine_key = "Routine: ";
-    char *net_task_request_routine_value = encode()
-    return NULL;
+    char *net_task_request_routine_value = encode(net_task_request->routine_file, net_task_request->routine_file_length, &encoded_routine_file_length);
+
+    /* We're also going to encode the routine arguments data. */
+    size_t encoded_routine_arguments_length = 0;
+    char *net_task_request_routine_arguments_key = "Routine Arguments: ";
+    char *net_task_request_routine_arguments_value = encode(net_task_request->routine_arguments, net_task_request->routine_arguments_length, &encoded_routine_arguments_length);
 
 }

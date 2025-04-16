@@ -23,10 +23,17 @@ void *print(void *data) {
 
 void main() {
 
-    void *handle = dlopen("./test.so", RTLD_LAZY);
-    void *(*routine)(void *routine_vargs_p);
-    *(void **) (&routine) = dlsym(handle, "a");
+    FILE *file_ptr = fopen("./test.so", "r");
+    fseek(file_ptr, 0, SEEK_END);
+    long fsize = ftell(file_ptr);
+    fseek(file_ptr, 0, SEEK_SET);
+    char *memory = malloc(fsize + 1);
+    fread(memory, fsize, 1, file_ptr);
 
-    routine(NULL);
+
+    net_task_request_t *a = malloc(sizeof(net_task_request_t));
+    a->routine_file = (void *) memory;
+    a->routine_file_length = fsize;
+    serialize_net_task_request(a);
 
 }
