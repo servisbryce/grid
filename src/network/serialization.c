@@ -132,6 +132,7 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
 }
 
+/* We aim to provide a facility to serialize network task requests.*/
 char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
     /* Validate our parameters. */
