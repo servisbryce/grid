@@ -34,6 +34,7 @@ void main() {
     net_task_request_t *a = malloc(sizeof(net_task_request_t));
     a->routine_file = (void *) memory;
     a->routine_file_length = fsize;
-    serialize_net_task_request(a);
+    char *b = serialize_net_task_request(a);
+    printf("%s\n", b);
 
 }

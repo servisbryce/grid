@@ -141,6 +141,9 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
     }
 
+    /* Hold our constant strings here. */
+    char *newline = "\n";
+
     /* Assemble the headers. */
     size_t net_status_length = 0;
     char *net_task_request_type = "Type: net_task_request_t\n";
@@ -155,9 +158,25 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
     char *net_task_request_routine_key = "Routine: ";
     char *net_task_request_routine_value = encode(net_task_request->routine_file, net_task_request->routine_file_length, &encoded_routine_file_length);
 
-    /* We're also going to encode the routine arguments data. */
+    /* We're also going to encode the routine arguments as well. */
     size_t encoded_routine_arguments_length = 0;
     char *net_task_request_routine_arguments_key = "Routine Arguments: ";
     char *net_task_request_routine_arguments_value = encode(net_task_request->routine_arguments, net_task_request->routine_arguments_length, &encoded_routine_arguments_length);
+
+    /* Assemble the serialized network task request message. */
+    char *serialized_net_task_request = (char *) malloc(strlen(net_task_request_type) + strlen(net_task_request_identifier_key) + strlen(net_task_request_identifier_value) + strlen(newline) + strlen(net_task_request_routine_key) + strlen(net_task_request_routine_value) + strlen(newline) + strlen(net_task_request_routine_arguments_key) + strlen(net_task_request_routine_arguments_value) + strlen(newline) + 1);
+    strcpy(serialized_net_task_request, net_task_request_type);
+    strcat(serialized_net_task_request, net_task_request_identifier_key);
+    strcat(serialized_net_task_request, net_task_request_identifier_value);
+    strcat(serialized_net_task_request, newline);
+    strcat(serialized_net_task_request, net_task_request_routine_key);
+    strcat(serialized_net_task_request, net_task_request_routine_value);
+    strcat(serialized_net_task_request, newline);
+    strcat(serialized_net_task_request, net_task_request_routine_arguments_key);
+    strcat(serialized_net_task_request, net_task_request_routine_arguments_value);
+    strcat(serialized_net_task_request, newline);
+
+    /* Return the serialized network task request message.*/
+    return serialized_net_task_request;
 
 }
