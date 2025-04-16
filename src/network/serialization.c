@@ -8,6 +8,7 @@
 #include "../../include/base64.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /* We aim to provide a facility to serialize a network status structure to an encoded string. */
 char *serialize_net_status(net_status_t *net_status) {
@@ -128,5 +129,30 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
     /* Return the completed structure. */
     return net_status;
+
+}
+
+char *serialize_net_task_request(net_task_request_t *net_task_request) {
+
+    /* Validate our parameters. */
+    if (!net_task_request) {
+
+        return NULL;
+
+    }
+
+    /* Assemble the headers. */
+    size_t net_status_length = 0;
+    char *net_task_request_type = "Type: net_task_request_t\n";
+
+    /* Assemble the content keys and encoded values. */
+    char *net_task_request_identifier_key = "Identifier: ";
+    size_t net_task_request_identifier_value_length = 0;
+    char *net_task_request_identifier_value = encode(&net_task_request->identifier, sizeof(net_task_request->identifier), &net_task_request_identifier_value_length);
+
+    /* These two requests are pointers which means we're going to have to copy the data that they point to instead of just copying the pointers. */
+    char *net_task_request_routine_key = "Routine: ";
+    char *net_task_request_routine_value = encode()
+    return NULL;
 
 }

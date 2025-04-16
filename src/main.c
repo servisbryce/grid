@@ -5,22 +5,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <stdint.h>
+#include <dlfcn.h>
 
 void *print(void *data) {
 
-    thread_task_t *d = (thread_task_t *) data;
-    printf("%s\n", (char *) d->routine_vargs_p);
+    printf("da\n");
+    printf("how are ya doin?\n");
+    printf("change412\n");
+    printf("hi\n");
+    int a = 0;
+    a++;
     return data;
 
 }
 
 void main() {
 
-    net_status_t *a = malloc(sizeof(net_status_t));
-    a->status = false;
-    char *b = serialize_net_status(a);
-    printf("%s\n", b);
-    net_status_t *c = deserialize_net_status(b);
-    printf("%d\n", c->status);
+    void *handle = dlopen("./test.so", RTLD_LAZY);
+    void *(*routine)(void *routine_vargs_p);
+    *(void **) (&routine) = dlsym(handle, "a");
+
+    routine(NULL);
 
 }

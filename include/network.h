@@ -14,8 +14,10 @@
 typedef struct net_task_request {
 
     size_t identifier;
-    void *(*routine)(void *routine_vargs_p);
-    void *routine_vargs_p;
+    size_t routine_length;
+    void *routine_file;
+    size_t routine_arguments_length;
+    void *routine_arguments;
 
 } net_task_request_t;
 

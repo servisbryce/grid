@@ -15,4 +15,6 @@ char *serialize_net_status(net_status_t *net_status);
 /* We aim to provide a facility to deserialize a serialized network status string. */
 net_status_t *deserialize_net_status(char *serialized_net_status);
 
+char *serialize_net_task_request(net_task_request_t *net_task_request);
+
 #endif
