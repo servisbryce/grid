@@ -164,7 +164,7 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
     /* We're going to encode the routine file. */
     size_t encoded_routine_file_length = 0;
-    char *net_task_request_routine_key = "Routine: ";
+    char *net_task_request_routine_key = "Routine File: ";
     char *net_task_request_routine_value = encode(net_task_request->routine_file, net_task_request->routine_file_length, &encoded_routine_file_length);
 
     /* We're also going to encode the routine arguments as well. */
@@ -222,9 +222,10 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
 
         }
 
+        /* Check if the structure we want to create is defined. If so, then create it. */
         if (strcmp(type, "Type") == 0) {
 
-            if (strcmp(value, "net_task_request_t") == 0) {
+            if (strcmp(key, "net_task_request_t") == 0) {
 
                 net_task_request = (net_task_request_t *) malloc(sizeof(net_task_request_t));
                 current_line = strtok_r(NULL, "\n", &line_context);
@@ -235,18 +236,39 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
         }
 
         /* We need to ensure that the object has been defined first, if not then we may encounter memory issues. */
-        if (!net_status) {
+        if (!net_task_request) {
 
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
 
         }
 
+        /* If our identifier is set, then we'll set the identifier in our object accordingly. */
         if (strcmp(type, "Identifier") == 0) {
 
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
-            net_task_request->
+            net_task_request->identifier = *decoded_value;
+
+        }
+
+        /* If our routine file is set, then we'll load it into memory for processing later. */
+        if (strcmp(type, "Routine File") == 0) {
+
+            size_t decoded_value_length = 0;
+            char *decoded_value = decode(key, &decoded_value_length);
+            net_task_request->routine_file_length = decoded_value_length;
+            net_task_request->routine_file = (void *) decoded_value;
+
+        }
+
+        /* If our routine arguments are set, then we'll load them into memory as well for processing later. */
+        if (strcmp(type, "Routine Arguments") == 0) {
+
+            size_t decoded_value_length = 0;
+            char *decoded_value = decode(key, &decoded_value_length);
+            net_task_request->routine_file_length = decoded_value_length;
+            net_task_request->routine_file = (void *) decoded_value;
 
         }
 
