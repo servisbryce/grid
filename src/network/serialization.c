@@ -72,7 +72,7 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
     /* We're going to loop through every line in the string. */
     char *current_line = strtok_r(net_status_serialized, "\n", &line_context);
-    while (current_line != NULL) {
+    while (current_line) {
 
         /* We are going to then seperate each line into their type and value components.*/
         char *type = strtok(current_line, ": ");
@@ -179,5 +179,61 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
     /* Return the serialized network task request message.*/
     return serialized_net_task_request;
+
+}
+
+/* We aim to provide a facility to deserialize a serialized network task request message. */
+net_task_request_t *deserialize_net_task_request(char *serialized_net_task_request) {
+
+    /* Validate that our inputs aren't null to prevent memory issues. */
+    if (!serialize_net_task_request) {
+
+        return NULL;
+
+    }
+
+    /* Duplicate our original string because we'll be modifying this string during the translation process. */
+    char *net_task_request_serialized = strdup(serialized_net_task_request);
+
+    /* We'll also need to setup a line context because we'll be jumping from multiple different tokenization contexts within all branches of this function. */
+    char *line_context = NULL;
+
+    /* Create our object. Parse the message, line by line. */
+    net_task_request_t *net_task_request = NULL;
+    char *current_line = strtok_r(net_task_request_serialized, "\n", &line_context);
+    while (current_line) {
+
+        /* Parse the type and key of the line. */
+        char *type = strtok(current_line, ": ");
+        char *key = strtok(NULL, ": ");
+
+        /* If one or the other don't exist, then halt immediately as this line is corrupted. */
+        if (!type || !key) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+
+        }
+
+        if (strcmp(type, "Type") == 0) {
+
+            if (strcmp(value, "net_task_request_t") == 0) {
+
+                net_task_request = (net_task_request_t *) malloc(sizeof(net_task_request_t));
+                current_line = strtok_r(NULL, "\n", &line_context);
+                continue;
+
+            }
+
+        }
+
+        if (strcmp(type, "Identifier") == 0) {
+
+            size_t decoded_value_length = 0;
+            size_t *decoded_value = decode(key, &decoded_value_length);
+            net_task_request->
+
+        }
+
+    }
 
 }
