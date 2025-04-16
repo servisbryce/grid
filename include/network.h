@@ -26,7 +26,7 @@ typedef struct net_task_response {
 
     size_t identifier;
     size_t routine_return_buffer_length;
-    void *routine_return_buffer_p;
+    void *routine_return_buffer;
 
 } net_task_response_t;
 
