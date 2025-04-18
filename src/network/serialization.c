@@ -284,15 +284,3 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
     return net_task_request;
 
 }
-
-/* We aim to provide a facility to serialize a network task request. */
-char *serialize_net_task_request(net_task_request_t *net_task_request) {
-
-    /* Validate our input parameters. */
-    if (!net_task_request) {
-
-        return NULL;
-
-    }
-    
-}
