@@ -37,4 +37,9 @@ typedef struct net_status {
 
 } net_status_t;
 
+/* We aim to provide facilities to destroy various structures. */
+int destroy_net_task_request(net_task_request_t *net_task_request);
+int destroy_net_task_response(net_task_response_t *net_task_response);
+int destroy_net_status(net_status_t *net_status);
+
 #endif
