@@ -4,6 +4,10 @@
 
 */
 
+#include "../../include/network.h"
+#include <stdlib.h>
+
+/* We aim to provide a facility to destroy network task requests. */
 int destroy_net_task_request(net_task_request_t *net_task_request) {
 
     /* Ensure our input parameters are valid. */
@@ -19,7 +23,7 @@ int destroy_net_task_request(net_task_request_t *net_task_request) {
         free(net_task_request->routine_file);
 
     }
-    
+
     /* Free the memory allocated for the routine arguments. */
     if (net_task_request->routine_arguments) {
 

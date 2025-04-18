@@ -154,7 +154,6 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
     char *newline = "\n";
 
     /* Assemble the headers. */
-    size_t net_status_length = 0;
     char *net_task_request_type = "Type: net_task_request_t\n";
 
     /* Assemble the content keys and encoded values. */
@@ -194,7 +193,7 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
 net_task_request_t *deserialize_net_task_request(char *serialized_net_task_request) {
 
     /* Validate that our inputs aren't null to prevent memory issues. */
-    if (!serialize_net_task_request) {
+    if (!serialized_net_task_request) {
 
         return NULL;
 
