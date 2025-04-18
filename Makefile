@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Iinclude -I/usr/include -g
 LDFLAGS = -L/usr/include -l ssl -l crypto
 
 # Source files
-SRCS = $(wildcard src/*/*.c) src/main.c
+SRCS = $(wildcard src/*/*.c) $(wildcard src/*/*/*.c) src/main.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
