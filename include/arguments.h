@@ -12,4 +12,4 @@ typedef struct arguments {
 } arguments_t;
 
 /* This is a facility to convert command-line arguments into the arguments structure above. */
-arguments_t parse_arguments(int argc, char **argv)
+arguments_t parse_arguments(int argc, char **argv);
