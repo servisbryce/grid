@@ -45,6 +45,13 @@ char *serialize_net_status(net_status_t *net_status) {
     strcat(serialized_net_status, net_status_key);
     strcat(serialized_net_status, net_status_value);
     strcat(serialized_net_status, "\n");
+    
+    /* If we allocated memory for this value and we've reached this stage of the function, we don't need it anymore. So, destroy it.  */
+    if (net_status_value) {
+    
+        free(net_status_value);
+    
+    }
 
     /* Return the value. */
     return serialized_net_status;
@@ -183,6 +190,25 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
     strcat(serialized_net_task_request, net_task_request_routine_arguments_key);
     strcat(serialized_net_task_request, net_task_request_routine_arguments_value);
     strcat(serialized_net_task_request, newline);
+
+    /* If we allocated memory for these values and we've reached this stage of the function, we don't need them anymore. So, destroy it. */
+    if (net_task_request_identifier_value) {
+
+        free(net_task_request_identifier_value);
+
+    }
+
+    if (net_task_request_routine_value) {
+
+        free(net_task_request_routine_value);
+
+    }
+
+    if (net_task_request_routine_arguments_value) {
+
+        free(net_task_request_routine_arguments_value);
+
+    }
 
     /* Return the serialized network task request message.*/
     return serialized_net_task_request;
