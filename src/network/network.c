@@ -63,3 +63,20 @@ int destroy_net_task_response(net_task_response_t *net_task_response) {
     return 0;
 
 }
+
+int destroy_net_status(net_status_t *net_status) {
+
+    /* Ensure our input parameters are valid. */
+    if (!net_status) {
+
+        return -1;
+
+    }
+
+    /* Free the memory allocated for the net status structure. */
+    free(net_status);
+
+    /* Return success. */
+    return 0;
+
+}
