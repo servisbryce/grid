@@ -1,6 +1,6 @@
 /*
 
-    We aim to provide a facility for the user to be able to pass command line arguments to the program.
+    We aim to provide a facility for the user to be able to pass command-line arguments to the program.
 
 */
 
@@ -10,3 +10,6 @@ typedef struct arguments {
     bool workerMode;
 
 } arguments_t;
+
+/* This is a facility to convert command-line arguments into the arguments structure above. */
+arguments_t parse_arguments(int argc, char **argv)
