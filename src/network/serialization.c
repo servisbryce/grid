@@ -151,7 +151,7 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
     /* Validate our parameters. */
-    if (!net_task_request) {
+    if (!net_task_request || !net_task_request->routine_file || !net_task_request->routine_arguments) {
 
         return NULL;
 
