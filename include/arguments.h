@@ -4,10 +4,15 @@
 
 */
 
+#include <stddef.h>
+
 /* This is a structure containing the parameters set via command-line by the user. */
 typedef struct arguments {
 
+    size_t threads;
     bool workerMode;
+    char *tls_certificate;
+    char *tls_certificate_key;
 
 } arguments_t;
 

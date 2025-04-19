@@ -1,4 +1,5 @@
 #include "../include/thread_pool.h"
+#include "../include/arguments.h"
 #include "../include/network.h"
 #include "../include/serialization.h"
 #include "../include/base64.h"
@@ -21,8 +22,11 @@ void *print(void *data) {
 
 }
 
-void main() {
+void main(int argc, char **argv) {
 
-
+    arguments_t args = parse_arguments(argc, argv);
+    printf("%ld\n", args.threads);
+    printf("%s\n", args.tls_certificate);
+    printf("%s\n", args.tls_certificate_key);
 
 }
