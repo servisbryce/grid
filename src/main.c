@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
         if (arguments.workerMode) {
 
             /* Create a server context. */
-            ssl_context = create_ssl_server_context(arguments.tls_certificate, arguments.tls_certificate_key);
+            ssl_context = create_ssl_client_context(arguments.tls_certificate, arguments.tls_certificate_key);
             if (ssl_context == NULL) {
 
                 fprintf(stderr, "Failed to create SSL context for server.\n");
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         } else {
 
             /* Create a client context. */
-            ssl_context = create_ssl_client_context(arguments.tls_certificate, arguments.tls_certificate_key);
+            ssl_context = create_ssl_server_context(arguments.tls_certificate, arguments.tls_certificate_key);
             if (ssl_context == NULL) {
 
                 fprintf(stderr, "Failed to create SSL context for client.\n");
