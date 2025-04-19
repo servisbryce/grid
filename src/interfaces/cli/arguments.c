@@ -55,6 +55,7 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     }
 
+    /* Ensure that the user has selected both a certificate and a key, not one or the other. */
     if ((arguments.tls_certificate && !arguments.tls_certificate_key) || (!arguments.tls_certificate && arguments.tls_certificate_key)) {
 
         fprintf(stderr, "You are either missing a certificate path or a certificate key path. You must have a certificate and a certificate key.\n");
