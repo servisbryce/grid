@@ -42,4 +42,21 @@ int main(int argc, char **argv) {
 
     }
 
+    /* Create a task thread pool. */
+    thread_pool_t *task_thread_pool = NULL;
+    if (arguments.workerMode) {
+
+        task_thread_pool = create_thread_pool(arguments.threads);
+        if (!task_thread_pool) {
+
+            fprintf(stderr, "Failed to create thread pool.\n");
+            return -1;
+    
+        }
+
+    }
+
+    /* Create networking thread pool. */
+    thread_pool_t *network_thread_pool = create_thread_pool(4);
+
 }

@@ -9,7 +9,8 @@
 /* This is a structure containing the parameters set via command-line by the user. */
 typedef struct arguments {
 
-    size_t threads;
+    size_t task_threads;
+    size_t network_threads;
     bool workerMode;
     char *tls_certificate;
     char *tls_certificate_key;

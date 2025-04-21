@@ -20,7 +20,7 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     /* Parse arguments passed by the user. */
     int option;
-    while ((option = getopt(argc, argv, "wt:c:k:")) != -1) {
+    while ((option = getopt(argc, argv, "wt:c:k:n:")) != -1) {
 
         switch (option) {
 
@@ -29,10 +29,21 @@ arguments_t parse_arguments(int argc, char **argv) {
                 break;
 
             case 't':
-                arguments.threads = (size_t) strtoumax(optarg, NULL, 10);
-                if (arguments.threads == 0) {
+                arguments.task_threads = (size_t) strtoumax(optarg, NULL, 10);
+                if (arguments.task_threads == 0) {
 
-                    fprintf(stderr, "You must specify at least one thread: %s\n", optarg);
+                    fprintf(stderr, "You must specify at least one task thread: %s\n", optarg);
+                    exit(EXIT_FAILURE);
+
+                }
+
+                break;
+
+            case 'n':
+                arguments.network_threads = (size_t) strtoumax(optarg, NULL, 10);
+                if (arguments.network_threads == 0) {
+
+                    fprintf(stderr, "You must specify at least one network thread: %s\n", optarg);
                     exit(EXIT_FAILURE);
 
                 }
