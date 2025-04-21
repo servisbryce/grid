@@ -16,6 +16,8 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     /* Create arguments structure in the stack. Make sure that the structure is clean before we use it by zeroing it out.  */
     arguments_t arguments;
+    arguments.task_threads = 2;
+    arguments.network_threads = 2;
     memset(&arguments, 0, sizeof(arguments));
 
     /* Parse arguments passed by the user. */
@@ -41,9 +43,9 @@ arguments_t parse_arguments(int argc, char **argv) {
 
             case 'n':
                 arguments.network_threads = (size_t) strtoumax(optarg, NULL, 10);
-                if (arguments.network_threads == 0) {
+                if (arguments.network_threads <= 1) {
 
-                    fprintf(stderr, "You must specify at least one network thread: %s\n", optarg);
+                    fprintf(stderr, "You must specify at least more than one network thread: %s\n", optarg);
                     exit(EXIT_FAILURE);
 
                 }
