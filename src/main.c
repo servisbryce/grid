@@ -58,5 +58,11 @@ int main(int argc, char **argv) {
 
     /* Create networking thread pool. */
     thread_pool_t *network_thread_pool = create_thread_pool(arguments.network_threads);
+    if (!network_thread_pool) {
+
+        fprintf(stderr, "Failed to create network thread pool.\n");
+        return -1;
+
+    }
 
 }
