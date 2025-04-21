@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     thread_pool_t *task_thread_pool = NULL;
     if (arguments.workerMode) {
 
-        task_thread_pool = create_thread_pool(arguments.threads);
+        task_thread_pool = create_thread_pool(arguments.task_threads);
         if (!task_thread_pool) {
 
             fprintf(stderr, "Failed to create thread pool.\n");
@@ -57,6 +57,6 @@ int main(int argc, char **argv) {
     }
 
     /* Create networking thread pool. */
-    thread_pool_t *network_thread_pool = create_thread_pool(4);
+    thread_pool_t *network_thread_pool = create_thread_pool(arguments.network_threads);
 
 }
