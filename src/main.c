@@ -78,4 +78,26 @@ int main(int argc, char **argv) {
 
     }
 
+    /* Destroy the thread pools and exit the program. */
+    if (task_thread_pool) {
+
+        thread_pool_destroy(task_thread_pool);
+
+    }
+
+    if (network_thread_pool) {
+
+        thread_pool_destroy(network_thread_pool);
+
+    }
+
+    /* If we setup any contexts that we haven't destroyed already, we should also do that as well. */
+    if (ssl_context) {
+
+        SSL_CTX_free(ssl_context);
+
+    }
+
+    return EXIT_SUCCESS;
+
 }
