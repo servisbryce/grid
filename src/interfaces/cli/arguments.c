@@ -22,7 +22,7 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     /* Parse arguments passed by the user. */
     int option;
-    while ((option = getopt(argc, argv, "wt:c:k:n:")) != -1) {
+    while ((option = getopt(argc, argv, "wt:c:k:n:h:p:")) != -1) {
 
         switch (option) {
 
@@ -58,6 +58,14 @@ arguments_t parse_arguments(int argc, char **argv) {
 
             case 'k':
                 arguments.tls_certificate_key = strdup(optarg);
+                break;
+
+            case 'h':
+                arguments.host = strdup(optarg);
+                break;
+
+            case 'p':
+                arguments.port = (uint16_t) strtol(optarg, NULL, 10);
                 break;
 
             default:

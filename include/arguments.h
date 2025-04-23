@@ -14,6 +14,8 @@ typedef struct arguments {
     bool workerMode;
     char *tls_certificate;
     char *tls_certificate_key;
+    char *host;
+    uint16_t port;
 
 } arguments_t;
 
