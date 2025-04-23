@@ -5,6 +5,7 @@
 */
 
 #include <stddef.h>
+#include <stdint.h>
 
 /* This is a structure containing the parameters set via command-line by the user. */
 typedef struct arguments {

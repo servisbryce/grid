@@ -31,7 +31,7 @@ arguments_t parse_arguments(int argc, char **argv) {
                 break;
 
             case 't':
-                arguments.task_threads = (size_t) strtoumax(optarg, NULL, 10);
+                arguments.task_threads = (size_t) strtol(optarg, NULL, 10);
                 if (arguments.task_threads == 0) {
 
                     fprintf(stderr, "You must specify at least one task thread: %s\n", optarg);
@@ -42,7 +42,7 @@ arguments_t parse_arguments(int argc, char **argv) {
                 break;
 
             case 'n':
-                arguments.network_threads = (size_t) strtoumax(optarg, NULL, 10);
+                arguments.network_threads = (size_t) strtol(optarg, NULL, 10);
                 if (arguments.network_threads <= 1) {
 
                     fprintf(stderr, "You must specify at least more than one network thread: %s\n", optarg);
