@@ -4,3 +4,18 @@
 
 */
 
+#include "../../../include/sequencer.h"
+
+/* We aim to provide a function to disassemble any message into multiple different messages sized the same as or below the packet length. */
+char **disassemble_message(char *message, size_t packet_length) {
+
+
+
+}
+
+/* We aim to provide a function to assemble multiple messages into a single message. */
+char *reassemble_message(char **messages) {
+
+
+
+}
