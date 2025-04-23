@@ -4,6 +4,9 @@
 
 */
 
+#ifndef ARGUMENTS_H
+#define ARGUMENTS_H
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -22,3 +25,5 @@ typedef struct arguments {
 
 /* This is a facility to convert command-line arguments into the arguments structure above. */
 arguments_t parse_arguments(int argc, char **argv);
+
+#endif

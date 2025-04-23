@@ -4,6 +4,9 @@
 
 */
 
+#ifndef THREAD_POOL_H
+#define THREAD_POOL_H
+
 #include <pthread.h>
 #include <stdbool.h>
 
@@ -52,3 +55,5 @@ int thread_pool_wait(thread_pool_t *thread_pool);
 
 /* This function creates a facility for the program to destroy the thread pool in a memory-safe manner. */
 int thread_pool_destroy(thread_pool_t *thread_pool);
+
+#endif
