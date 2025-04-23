@@ -65,4 +65,17 @@ int main(int argc, char **argv) {
 
     }
 
+    /* Branch if we're a controller or a worker. */
+    if (!arguemnts.workerMode) {
+
+        /* We are a controller. */
+        printf("Controller mode.\n");
+
+    } else {
+
+        /* We are a worker. */
+        printf("Worker mode.\n");
+
+    }
+
 }

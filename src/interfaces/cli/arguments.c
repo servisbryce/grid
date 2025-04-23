@@ -84,6 +84,28 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     }
 
+    /* If we're a worker and there's no controller address set, then throw an error. */
+    if (arguments.workerMode && !arguments.host) {
+
+        fprintf(stderr, "You must specify a host when using worker mode.\n");
+        exit(EXIT_FAILURE);
+
+    }
+
+    /* If we're a controller, then just accept all incoming connections on port 15411 if there aren't any options set. */
+    if (!arguments.workerMode && !arguments.host) {
+
+        arguments.host = "0.0.0.0";
+
+    }
+
+    /* If the user hasn't specified a port, then we should set it to the protocol default 15411. */
+    if (arguments.port <= 1) {
+        
+        arguments.port = 15411;
+
+    }
+
     return arguments;
 
 }
