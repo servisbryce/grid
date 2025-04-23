@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
             if (ssl_context == NULL) {
 
                 fprintf(stderr, "Failed to create SSL context for server.\n");
-                return -1;
+                return EXIT_FAILURE;
 
             }
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
             if (ssl_context == NULL) {
 
                 fprintf(stderr, "Failed to create SSL context for client.\n");
-                return -1;
+                return EXIT_FAILURE;
 
             }
 
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         if (!task_thread_pool) {
 
             fprintf(stderr, "Failed to create thread pool.\n");
-            return -1;
+            return EXIT_FAILURE;
     
         }
 
@@ -61,12 +61,12 @@ int main(int argc, char **argv) {
     if (!network_thread_pool) {
 
         fprintf(stderr, "Failed to create network thread pool.\n");
-        return -1;
+        return EXIT_FAILURE;
 
     }
 
     /* Branch if we're a controller or a worker. */
-    if (!arguemnts.workerMode) {
+    if (!arguments.workerMode) {
 
         /* We are a controller. */
         printf("Controller mode.\n");
