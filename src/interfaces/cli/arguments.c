@@ -16,9 +16,9 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     /* Create arguments structure in the stack. Make sure that the structure is clean before we use it by zeroing it out.  */
     arguments_t arguments;
+    memset(&arguments, 0, sizeof(arguments));
     arguments.task_threads = 2;
     arguments.network_threads = 2;
-    memset(&arguments, 0, sizeof(arguments));
 
     /* Parse arguments passed by the user. */
     int option;
