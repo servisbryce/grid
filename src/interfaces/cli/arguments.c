@@ -17,8 +17,15 @@ arguments_t parse_arguments(int argc, char **argv) {
     /* Create arguments structure in the stack. Make sure that the structure is clean before we use it by zeroing it out.  */
     arguments_t arguments;
     memset(&arguments, 0, sizeof(arguments));
+    /* Assert default parameters */
     arguments.task_threads = 2;
     arguments.network_threads = 2;
+    arguments.workerMode = false;
+
+    /* Ensure that we don't end up with any possible unintentional dangling pointers. */
+    arguments.tls_certificate = NULL;
+    arguments.tls_certificate_key = NULL;
+    arguments.host = NULL;
 
     /* Parse arguments passed by the user. */
     int option;
