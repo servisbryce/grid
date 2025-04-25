@@ -35,7 +35,7 @@ char *splice_string(char *string, size_t start, size_t length) {
 
 }
 
-/* We aim to provide a function to disassemble any message into multiple different messages sized the same as or below the packet length. */
+/* We aim to provide a function to disassemble any message into multiple different messages sized the same as or below the packet length. Not the most optimized solution, but it works for now. You could just programatically iterate over the string, but this is easier and more portable for the time being. */
 char **disassemble_message(char *message, size_t packet_length, size_t *segmented_message_length) {
 
     /* Ensure our message isn't null. */
