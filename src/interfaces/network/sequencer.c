@@ -83,10 +83,10 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
     *segmented_message_length = segment_length;
 
     /* Allocate our array of segments. */
-    char **segments = (char **) malloc(sizeof(char *) * segment_length);
+    char **segmented_message = (char **) malloc(sizeof(char *) * segment_length);
 
     /* If the allocation fails, bail out. */
-    if (!segments) {
+    if (!segmented_message) {
 
         free(segment_header);
         return NULL;
@@ -98,7 +98,7 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
 
         if (i == 0) {
 
-            segments[i] = segment_header;
+            segmented_message[i] = segment_header;
             
         } else {
 
@@ -113,13 +113,13 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
                 free(segment_header);
                 for (size_t j = 0; j < segment_length; j++) {
 
-                    if (segments[j]) {
+                    if (segmented_message[j]) {
                         
-                        free(segments[j]);
+                        free(segmented_message[j]);
 
                     }
 
-                    free(segments);
+                    free(segmented_message);
 
                 }
 
@@ -128,21 +128,21 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
             }
 
             /* Add the allocated string to the array. */
-            segments[i] = segment_content;
+            segmented_message[i] = segment_content;
 
         }
 
     }
 
-    return segments;
+    return segmented_message;
 
 }
 
 /* We aim to provide a facility to destroy a segmented message. */
-int destroy_segmented_message(char **segments, size_t segmented_message_length) {
+int destroy_segmented_message(char **segmented_message, size_t segmented_message_length) {
 
     /* Ensure our segments aren't null. */
-    if (!segments) {
+    if (!segmented_message) {
 
         return -1;
 
@@ -151,16 +151,16 @@ int destroy_segmented_message(char **segments, size_t segmented_message_length) 
     /* Free our segments. */
     for (size_t i = 0; i < segmented_message_length; i++) {
 
-        if (segments[i]) {
+        if (segmented_message[i]) {
 
-            free(segments[i]);
+            free(segmented_message[i]);
 
         }
 
     }
 
     /* Free the array itself. */
-    free(segments);
+    free(segmented_message);
     return 0;
 
 }
