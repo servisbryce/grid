@@ -2,6 +2,7 @@
 #include "../include/arguments.h"
 #include "../include/network.h"
 #include "../include/serialization.h"
+#include "../include/sequencer.h"
 #include "../include/base64.h"
 #include "../include/tls.h"
 #include <stdio.h>
@@ -75,6 +76,13 @@ int main(int argc, char **argv) {
 
         /* We are a worker. */
         printf("Worker mode.\n");
+
+    }
+
+    char **a = disassemble_message("Hello, world!\n", 4);
+    for (int b = 0; b < 5; b++) {
+
+        printf("%s", a[b]);
 
     }
 

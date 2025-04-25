@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "thread_pool.h": "c"
+        "thread_pool.h": "c",
+        "stdio.h": "c"
     }
 }
