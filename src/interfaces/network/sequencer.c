@@ -36,7 +36,7 @@ char *splice_string(char *string, size_t start, size_t length) {
 }
 
 /* We aim to provide a function to disassemble any message into multiple different messages sized the same as or below the packet length. */
-char **disassemble_message(char *message, size_t packet_length) {
+char **disassemble_message(char *message, size_t packet_length, size_t *segmented_message_length) {
 
     /* Ensure our message isn't null. */
     if (!message) {
@@ -80,6 +80,7 @@ char **disassemble_message(char *message, size_t packet_length) {
 
     /* Calculate how many segments we'll be making. */
     size_t segment_length = ((strlen(message) + 1) / packet_length) + ((strlen(message) + 1) % packet_length != 0 ? 1 : 0) + 1;
+    *segmented_message_length = segment_length;
 
     /* Allocate our array of segments. */
     char **segments = (char **) malloc(sizeof(char *) * segment_length);

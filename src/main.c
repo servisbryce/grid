@@ -79,7 +79,9 @@ int main(int argc, char **argv) {
 
     }
 
-    char **a = disassemble_message("Hello, world!\n", 4);
+    size_t length;
+    char **a = disassemble_message("Hello, world!\n", 4, &length);
+    printf("%zu\n", length);
     for (int b = 0; b < 5; b++) {
 
         printf("%s", a[b]);
