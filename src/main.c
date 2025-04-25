@@ -81,12 +81,8 @@ int main(int argc, char **argv) {
 
     size_t length;
     char **a = disassemble_message("Hello, world!\n", 4, &length);
-    printf("%zu\n", length);
-    for (int b = 0; b < 5; b++) {
-
-        printf("%s", a[b]);
-
-    }
+    char *b = reassemble_message(a, length);
+    printf("Reassembled message: %s\n", b);
 
     /* Destroy the thread pools and exit the program. */
     if (task_thread_pool) {

@@ -16,6 +16,6 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
 int destroy_segmented_message(char **segmented_message, size_t segmented_message_length);
 
 /* We aim to provide a function to assemble multiple messages into a single message. */
-char *reassemble_message(char **messages);
+char *reassemble_message(char **segmented_message, size_t segmented_message_length);
 
 #endif

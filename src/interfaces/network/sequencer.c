@@ -166,8 +166,61 @@ int destroy_segmented_message(char **segmented_message, size_t segmented_message
 }
 
 /* We aim to provide a function to assemble multiple messages into a single message. */
-char *reassemble_message(char **messages) {
+char *reassemble_message(char **segmented_message, size_t segmented_message_length) {
 
+    /* Ensure our segments aren't null. */
+    if (!segmented_message) {
 
+        return NULL;
+
+    }
+
+    /* See how large our message will be so we know how much we need to allocate from the heap later. We want to avoid using reallocate when possible as it's sometimes expensive. */
+    size_t reassembled_message_length = 0;
+    for (size_t i = 0; i < segmented_message_length; i++) {
+
+        /* If our message segment exists, add up its size. */
+        if (segmented_message[i]) {
+
+            reassembled_message_length += strlen(segmented_message[i]);
+
+        } else {
+
+            /* If our message segment is incomplete, we shouldn't reassemble the message. Rather, we should tell the user something went wrong. */
+            return NULL;
+
+        }
+
+    }
+
+    /* Allocate our reassembled message. */
+    char *reassembled_message = (char *) malloc(reassembled_message_length + 1);
+
+    /* Ensure our allocation was successful. */
+    if (!reassembled_message) {
+
+        return NULL;
+
+    }
+
+    strcpy(reassembled_message, segmented_message[0]);
+    for (size_t i = 1; i < segmented_message_length; i++) {
+
+        /* If our message segment exists, add it to the reassembled message. */
+        if (segmented_message[i]) {
+
+            strcat(reassembled_message, segmented_message[i]);
+
+        } else {
+
+            /* If our message segment is incomplete, we shouldn't reassemble the message. Rather, we should tell the user something went wrong. */
+            free(reassembled_message);
+            return NULL;
+
+        }
+
+    }
+
+    return reassembled_message;
 
 }
