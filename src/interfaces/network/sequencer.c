@@ -138,6 +138,33 @@ char **disassemble_message(char *message, size_t packet_length, size_t *segmente
 
 }
 
+/* We aim to provide a facility to destroy a segmented message. */
+int destroy_segmented_message(char **segments, size_t segmented_message_length) {
+
+    /* Ensure our segments aren't null. */
+    if (!segments) {
+
+        return -1;
+
+    }
+
+    /* Free our segments. */
+    for (size_t i = 0; i < segmented_message_length; i++) {
+
+        if (segments[i]) {
+
+            free(segments[i]);
+
+        }
+
+    }
+
+    /* Free the array itself. */
+    free(segments);
+    return 0;
+
+}
+
 /* We aim to provide a function to assemble multiple messages into a single message. */
 char *reassemble_message(char **messages) {
 
