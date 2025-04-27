@@ -72,6 +72,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
             }
 
             pthread_mutex_unlock(&(thread_pool->thread_task_head_completed_mutex));
+            pthread_cond_broadcast(&(thread_pool->thread_task_head_completed_condition));
 
         }
 

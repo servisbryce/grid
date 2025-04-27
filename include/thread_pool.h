@@ -34,6 +34,7 @@ typedef struct thread_pool {
     pthread_mutex_t thread_task_head_available_mutex;
     pthread_mutex_t thread_task_head_completed_mutex;
     pthread_cond_t thread_task_head_available_condition;
+    pthread_cond_t thread_task_head_completed_condition;
     pthread_cond_t thread_active_threads_condition;
     thread_task_t *thread_task_head_available;
     thread_task_t *thread_task_head_completed;
