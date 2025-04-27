@@ -23,7 +23,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
         pthread_mutex_lock(&(thread_pool->thread_task_head_available_mutex));
         while (!thread_pool->halt && !thread_pool->thread_task_head_available) {
 
-            pthread_cond_wait(&(thread_pool->thread_task_head_condition), &(thread_pool->thread_task_head_available_mutex));
+            pthread_cond_wait(&(thread_pool->thread_task_head_available_condition), &(thread_pool->thread_task_head_available_mutex));
 
         }
 
@@ -119,7 +119,7 @@ thread_pool_t *create_thread_pool(size_t inactive_threads) {
     pthread_mutex_init(&(thread_pool->thread_active_threads_mutex), NULL);
     pthread_mutex_init(&(thread_pool->thread_task_head_available_mutex), NULL);
     pthread_mutex_init(&(thread_pool->thread_task_head_completed_mutex), NULL);
-    pthread_cond_init(&(thread_pool->thread_task_head_condition), NULL);
+    pthread_cond_init(&(thread_pool->thread_task_head_available_condition), NULL);
     pthread_cond_init(&(thread_pool->thread_active_threads_condition), NULL);
     thread_pool->thread_task_head_available = NULL;
     thread_pool->thread_task_head_completed = NULL;
@@ -179,7 +179,7 @@ thread_task_t *thread_pool_assign_task(thread_pool_t *thread_pool, void *(*routi
 
     /* Alert the program that a new task is available. Then, return the structure. */
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
-    pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
+    pthread_cond_broadcast(&(thread_pool->thread_task_head_available_condition));
     return thread_task;
 
 }
@@ -268,7 +268,7 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
 
     /* Halt the thread pool and alert the threads that they've been ordered to terminate.*/
     thread_pool->halt = true;
-    pthread_cond_broadcast(&(thread_pool->thread_task_head_condition));
+    pthread_cond_broadcast(&(thread_pool->thread_task_head_available_condition));
     pthread_mutex_unlock(&(thread_pool->thread_task_head_available_mutex));
 
     /* Wait for the threads to terminate. */
@@ -283,7 +283,7 @@ int thread_pool_destroy(thread_pool_t *thread_pool) {
     pthread_mutex_destroy(&(thread_pool->thread_active_threads_mutex));
     pthread_mutex_destroy(&(thread_pool->thread_task_head_available_mutex));
     pthread_mutex_destroy(&(thread_pool->thread_task_head_completed_mutex));
-    pthread_cond_destroy(&(thread_pool->thread_task_head_condition));
+    pthread_cond_destroy(&(thread_pool->thread_task_head_available_condition));
     pthread_cond_destroy(&(thread_pool->thread_active_threads_condition));
     free(thread_pool);
     return 0;
