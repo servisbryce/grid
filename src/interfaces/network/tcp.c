@@ -1,3 +1,9 @@
+/* 
+
+    We aim to provide facilities for server-side and client-side networking regardless if we are using transport layer security or not.
+
+*/
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/time.h>
