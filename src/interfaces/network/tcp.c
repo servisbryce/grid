@@ -4,9 +4,8 @@
 
 */
 
-#include "../../include/tcp.h"
+#include "../../../include/tcp.h"
 #include <sys/time.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
