@@ -4,10 +4,12 @@
 
 */
 
-#include <sys/socket.h>
-#include <sys/types.h>
+#include "../../include/tcp.h"
 #include <sys/time.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <netdb.h>
 
 /* We aim to provide a facility to create a sockaddr structure from an address and port schema. */
