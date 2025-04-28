@@ -5,10 +5,6 @@
 */
 
 #include "../../../include/tls.h"
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <stdint.h>
-#include <netdb.h>
 #include <err.h>
 
 /* Create a secure socket layer context intended to be used on the server-side. */

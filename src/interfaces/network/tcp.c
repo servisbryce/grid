@@ -1,3 +1,9 @@
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <stdint.h>
+#include <netdb.h>
+
 /* We aim to provide a facility to create a sockaddr structure from an address and port schema. */
 struct sockaddr *create_sockaddr(char *address, uint16_t port, unsigned int *sockaddr_length) {
 
@@ -60,7 +66,8 @@ struct sockaddr *create_sockaddr(char *address, uint16_t port, unsigned int *soc
 
 }
 
-int create_socket(struct sockaddr *sockaddr, unsigned int sockaddr_length, long timeout) {
+/* We aim to provide a facility to create a socket and set the options for it. */
+int create_socket(struct sockaddr *sockaddr, unsigned int sockaddr_length, unsigned int timeout) {
 
     /* Ensure that our function parameters are valid. */
     if (!sockaddr || sockaddr_length <= 0) {
@@ -70,6 +77,56 @@ int create_socket(struct sockaddr *sockaddr, unsigned int sockaddr_length, long 
     }
 
     /* Create a socket. */
-    if ()
+    int sockfd;
+    if ((sockfd = socket(sockaddr->sa_family, SOCK_STREAM, 0)) == -1) {
+
+        return -1;
+
+    }
+
+    /* Set options for the socket. */
+    int sockopts = SO_REUSEADDR | SO_REUSEPORT;
+    if (setsockopt(sockfd, SOL_SOCKET, sockopts, &sockopts, sizeof(sockopts)) == -1) {
+
+        close(sockfd);
+        return -1;
+
+    }
+
+    /* If the timeout is set to any value besides zero, we should accurately set the timeout. */
+    if (timeout > 0) {
+
+        /* Allocate the time value on the stack. */
+        struct timeval time;
+        memset(&time, 0, sizeof(time));
+
+        /* Set the time value in the structure and then apply the structure to the socket. */
+        time.tv_sec = timeout;
+        if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &time, sizeof(time)) < 0) {
+
+            close(sockfd);
+            return -1;
+
+        }
+
+    }
+
+    /* Bind the socket to the socket address provided by the user. */
+    if (bind(sockfd, sockaddr, sockaddr_length) == -1) {
+
+        close(sockfd);
+        return -1;
+
+    }
+
+    /* Set the socket to listen for incoming connections. */
+    if (listen(sockfd, SOMAXCONN) == -1) {
+
+        close(sockfd);
+        return -1;
+
+    }
+
+    return sockfd;
 
 }
