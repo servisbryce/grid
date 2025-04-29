@@ -163,6 +163,8 @@ int main(int argc, char **argv) {
 
         }
 
+        getchar();
+
     } else {
 
         /* We are a worker. */

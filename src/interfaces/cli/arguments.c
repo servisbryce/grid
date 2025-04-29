@@ -80,7 +80,16 @@ arguments_t parse_arguments(int argc, char **argv) {
                 break;
 
             default:
-                fprintf(stderr, "Usage: %s [-w]\n", argv[0]);
+                printf("grid [options]\n");
+                printf("Options:\n");
+                printf("  -w\t\tRun in worker mode.\n");
+                printf("  -t <threads>\tSet the number of task threads to use.\n");
+                printf("  -n <threads>\tSet the number of network threads to use.\n");
+                printf("  -c <path>\tSet the path to the TLS certificate.\n");
+                printf("  -k <path>\tSet the path to the TLS certificate key.\n");
+                printf("  -h <host>\tSet the host to bind or connect to.\n");
+                printf("  -p <port>\tSet the port to bind or connect to.\n");
+                printf("  -d <timeout>\tSet the timeout for the socket in seconds.\n");
                 exit(EXIT_FAILURE);
 
         }
