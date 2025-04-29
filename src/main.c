@@ -5,7 +5,15 @@
 #include "../include/sequencer.h"
 #include "../include/base64.h"
 #include "../include/tls.h"
+#include "../include/tcp.h"
+#include <netdb.h>
 #include <stdio.h>
+
+int teardown() {
+
+
+
+}
 
 int main(int argc, char **argv) {
 
@@ -51,6 +59,14 @@ int main(int argc, char **argv) {
         if (!task_thread_pool) {
 
             fprintf(stderr, "Failed to create thread pool.\n");
+            
+            /* If we've created a SSL context, we'll destroy that as well. */
+            if (ssl_context) {
+
+                SSL_CTX_free(ssl_context);
+
+            }
+
             return EXIT_FAILURE;
     
         }
@@ -62,6 +78,21 @@ int main(int argc, char **argv) {
     if (!network_thread_pool) {
 
         fprintf(stderr, "Failed to create network thread pool.\n");
+
+        /* If we've created a task thread pool but failed to create the network thread pool, we should tear down the task thread pool. */
+        if (!task_thread_pool) {
+
+            thread_pool_destroy(task_thread_pool);
+        
+        }
+
+        /* If we've created a SSL context, we'll destroy that as well. */
+        if (ssl_context) {
+
+            SSL_CTX_free(ssl_context);
+
+        }
+
         return EXIT_FAILURE;
 
     }
@@ -69,8 +100,35 @@ int main(int argc, char **argv) {
     /* Branch if we're a controller or a worker. */
     if (!arguments.workerMode) {
 
-        /* We are a controller. */
-        printf("Controller mode.\n");
+        /* Convert our human-readable address and port into a machine-readable format. */
+        unsigned int sockaddr_length;
+        struct sockaddr *sockaddr = create_sockaddr(arguments.host, arguments.port, &sockaddr_length);
+        if (!sockaddr) {
+
+            fprintf(stderr, "Failed to create sockaddr structure.\n");
+
+            /* Tear down any residual data structures. */
+            if (task_thread_pool) {
+
+                thread_pool_destroy(task_thread_pool);
+
+            }
+
+            if (network_thread_pool) {
+
+                thread_pool_destroy(network_thread_pool);
+
+            }
+
+            if (ssl_context) {
+
+                SSL_CTX_free(ssl_context);
+
+            }
+
+            return EXIT_FAILURE;
+
+        }
 
     } else {
 
@@ -78,11 +136,6 @@ int main(int argc, char **argv) {
         printf("Worker mode.\n");
 
     }
-
-    size_t length;
-    char **a = disassemble_message("Hello, world!\n", 4, &length);
-    char *b = reassemble_message(a, length);
-    printf("Reassembled message: %s\n", b);
 
     /* Destroy the thread pools and exit the program. */
     if (task_thread_pool) {
