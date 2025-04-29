@@ -183,6 +183,13 @@ int main(int argc, char **argv) {
 
     }
 
+    /* Free the socket address structure if it exists. */
+    if (sockaddr) {
+
+        free(sockaddr);
+
+    }
+
     /* If we setup any contexts that we haven't destroyed already, we should also do that as well. */
     if (ssl_context) {
 
