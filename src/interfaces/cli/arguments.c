@@ -29,7 +29,7 @@ arguments_t parse_arguments(int argc, char **argv) {
 
     /* Parse arguments passed by the user. */
     int option;
-    while ((option = getopt(argc, argv, "wt:c:k:n:h:p:")) != -1) {
+    while ((option = getopt(argc, argv, "wt:c:k:n:h:p:d:")) != -1) {
 
         switch (option) {
 
@@ -73,6 +73,10 @@ arguments_t parse_arguments(int argc, char **argv) {
 
             case 'p':
                 arguments.port = (uint16_t) strtol(optarg, NULL, 10);
+                break;
+
+            case 'd':
+                arguments.timeout = (unsigned int) strtol(optarg, NULL, 10);
                 break;
 
             default:

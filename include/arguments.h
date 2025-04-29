@@ -13,6 +13,7 @@
 /* This is a structure containing the parameters set via command-line by the user. */
 typedef struct arguments {
 
+    unsigned int timeout;
     size_t task_threads;
     size_t network_threads;
     bool workerMode;
