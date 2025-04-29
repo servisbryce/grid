@@ -91,40 +91,40 @@ int main(int argc, char **argv) {
 
     }
 
+    /* Convert our human-readable address and port into a machine-readable format. */
+    unsigned int sockaddr_length;
+    struct sockaddr *sockaddr = create_sockaddr(arguments.host, arguments.port, &sockaddr_length);
+
+    /* Check for errors. */
+    if (!sockaddr) {
+
+        fprintf(stderr, "Failed to create sockaddr structure.\n");
+    
+        /* Tear down any residual data structures. */
+        if (task_thread_pool) {
+   
+            thread_pool_destroy(task_thread_pool);
+    
+        }
+    
+        if (network_thread_pool) {
+    
+            thread_pool_destroy(network_thread_pool);
+    
+        }
+    
+        if (ssl_context) {
+    
+            SSL_CTX_free(ssl_context);
+    
+        }
+    
+        return EXIT_FAILURE;
+    
+    }
+
     /* Branch if we're a controller or a worker. */
     if (!arguments.workerMode) {
-
-        /* Convert our human-readable address and port into a machine-readable format. */
-        unsigned int sockaddr_length;
-        struct sockaddr *sockaddr = create_sockaddr(arguments.host, arguments.port, &sockaddr_length);
-
-        /* Check for errors. */
-        if (!sockaddr) {
-
-            fprintf(stderr, "Failed to create sockaddr structure.\n");
-
-            /* Tear down any residual data structures. */
-            if (task_thread_pool) {
-
-                thread_pool_destroy(task_thread_pool);
-
-            }
-
-            if (network_thread_pool) {
-
-                thread_pool_destroy(network_thread_pool);
-
-            }
-
-            if (ssl_context) {
-
-                SSL_CTX_free(ssl_context);
-
-            }
-
-            return EXIT_FAILURE;
-
-        }
 
         /* Create a socket. */
         int sockfd = create_socket(sockaddr, sockaddr_length, arguments.timeout);
