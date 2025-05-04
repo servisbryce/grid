@@ -131,13 +131,12 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_
     while (1) {
 
 	/* Prepare our structure to retain the information of the client that just connected for use later. */
-	struct sockaddr_in clientaddr;
-	unsigned int clientaddr_length = sizeof(clientaddr);
-	memset(&clientaddr, 0, clientaddr_length);
+	unsigned int clientaddr_length = sizeof(struct sockaddr_in);
+	struct sockaddr_in *client_sockaddr = (struct sockaddr_in *) malloc(clientaddr_length);
 
 	/* Handle an incoming connection and store the file descriptor for it. */
 	int client_sockfd;
-	if ((client_sockfd = accept(sockfd, (struct sockaddr*) &clientaddr, &clientaddr_length)) < 0) {
+	if ((client_sockfd = accept(sockfd, (struct sockaddr*) client_sockaddr, &clientaddr_length)) < 0) {
 
 	    fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection");
 	    continue;
@@ -155,6 +154,7 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_
 	}
 
 	/* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
+	
 
     }
 
