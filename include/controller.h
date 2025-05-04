@@ -9,15 +9,15 @@
 
 #include <openssl/ssl.h>
 
-typedef struct controller_network_task_vargs {
+typedef struct controller_tls_network_task_vargs {
 
 	struct sockaddr_in *client_sockaddr;
 	SSL *ssl;
 	int client_sockfd;
 
-} controller_network_task_vargs_t;
+} controller_tls_network_task_vargs_t;
 
 /* We aim to provide a facility to handle controller network tasks on the server-side. */
-void *controller_network_task(void *controller_network_task_vargs_p);
+void *controller_tls_network_task(void *controller_network_task_vargs_p);
 
 #endif

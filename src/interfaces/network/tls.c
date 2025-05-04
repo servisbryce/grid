@@ -155,13 +155,13 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int soc
 	}
 
 	/* Setup our virtual arguments for the thread we're going to create. */
-	controller_network_task_vargs_t *controller_network_task_vargs = (controller_network_task_vargs_t *) malloc(sizeof(controller_network_task_vargs_t));
-	controller_network_task_vargs->client_sockaddr = client_sockaddr;
-	controller_network_task_vargs->ssl = ssl;
-	controller_network_task_vargs->client_sockfd = client_sockfd;
+	controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) malloc(sizeof(controller_tls_network_task_vargs_t));
+	controller_tls_network_task_vargs->client_sockaddr = client_sockaddr;
+	controller_tls_network_task_vargs->ssl = ssl;
+	controller_tls_network_task_vargs->client_sockfd = client_sockfd;
 
 	/* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
-	thread_pool_assign_task(network_thread_pool, controller_network_task, controller_network_task_vargs);
+	thread_pool_assign_task(network_thread_pool, controller_tls_network_task, controller_tls_network_task_vargs);
 
     }
 

@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 /* We aim to provide a facility to handle any incoming connections that we may have. */
-void *controller_network_task(void *thread_task_p) {
+void *controller_tls_network_task(void *thread_task_p) {
 
     /* Cast our pointer into the appropriate type and structure. */
     thread_task_t *thread_task = (thread_task_t *) thread_task_p;
@@ -43,6 +43,6 @@ void *controller_network_task(void *thread_task_p) {
     /* Finally, close the connection and free the structure. Then, return and let the thread be freed. */
     close(controller_network_task_vargs->client_sockfd);
     free(controller_network_task_vargs);
-    return (void *) 0;
+    return (void *) thread_task;
 
 }
