@@ -4,7 +4,10 @@
 
 */
 
+#include "../../../include/thread_pool.h"
 #include "../../../include/tls.h"
+#include <netinet/in.h>
+#include <sys/socket.h>
 #include <err.h>
 
 /* Create a secure socket layer context intended to be used on the server-side. */
@@ -111,5 +114,48 @@ SSL_CTX *create_ssl_client_context(char *certificate_file_path, char *private_ke
 
     /* Return the completed secure socket layer structure. */
     return ssl_context;
-    
+
+}
+
+/* We aim to provide a facility to handle incoming connections on the server-side. */
+int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_pool_t *task_thread_pool, int sockfd) {
+
+    /* Ensure our inputs aren't null. */
+    if (!ssl_context || !network_thread_pool || !task_thread_pool || sockfd < 0) {
+
+	return -1;
+
+    }
+
+    /* We are to handle connections forever until the program is killed or we break out of this loop. */
+    while (1) {
+
+	/* Prepare our structure to retain the information of the client that just connected for use later. */
+	struct sockaddr_in clientaddr;
+	unsigned int clientaddr_length = sizeof(clientaddr);
+	memset(&clientaddr, 0, clientaddr_length);
+
+	/* Handle an incoming connection and store the file descriptor for it. */
+	int client_sockfd;
+	if ((client_sockfd = accept(sockfd, (struct sockaddr*) &clientaddr, &clientaddr_length)) < 0) {
+
+	    fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection");
+	    continue;
+
+	}
+
+	/* Perform a handshake to encrypt the connection. */
+	SSL *ssl = SSL_new(ssl_context);
+	SSL_set_fd(ssl, client_sockfd);
+	if (SSL_accept(ssl) <= 0) {
+
+	    fprintf(stderr, "There was an unexpected error while trying to perform an SSL handshake.");
+	    continue;
+
+	}
+
+	/* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
+
+    }
+
 }

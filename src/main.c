@@ -163,7 +163,16 @@ int main(int argc, char **argv) {
 
         }
 
-        getchar();
+	/* If encryption is enabled, we should branch into a routine for an encrypted server. Otherwise, treat it like an ordinary plaintext connection. */
+        if (ssl_context) {
+
+	    
+
+	} else {
+
+
+
+	}
 
     } else {
 
