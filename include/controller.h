@@ -7,12 +7,14 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-typedef struct controller_network_task {
+#include <openssl/ssl.h>
+
+typedef struct controller_network_task_vargs {
 
 	struct sockaddr_in *client_sockaddr;
 	SSL *ssl;
 	int client_sockfd;
 
-} controller_network_task_t
+} controller_network_task_vargs_t;
 
 #endif
