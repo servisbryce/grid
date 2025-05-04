@@ -5,6 +5,7 @@
 */
 
 #include "../../../include/thread_pool.h"
+#include "../../../include/controller.h"
 #include "../../../include/tls.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -59,7 +60,7 @@ SSL_CTX *create_ssl_server_context(char *certificate_file_path, char *private_ke
     /* Assign various parameters for the secure socket layer session cache. */
     size_t session_cache_length = 32768;
     long session_timeout_duration = 3600;
-    int cache_id = 1;
+    char cache_id[] = "grid server ssl cache";
 
     /* Setup a secure socket layer session cache to reduce latency during handshakes. */
     SSL_CTX_set_session_id_context(ssl_context, (void *) cache_id, sizeof(cache_id));
@@ -118,10 +119,10 @@ SSL_CTX *create_ssl_client_context(char *certificate_file_path, char *private_ke
 }
 
 /* We aim to provide a facility to handle incoming connections on the server-side. */
-int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_pool_t *task_thread_pool, int sockfd) {
+int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int sockfd) {
 
     /* Ensure our inputs aren't null. */
-    if (!ssl_context || !network_thread_pool || !task_thread_pool || sockfd < 0) {
+    if (!ssl_context || !network_thread_pool || sockfd < 0) {
 
 	return -1;
 
@@ -138,7 +139,7 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_
 	int client_sockfd;
 	if ((client_sockfd = accept(sockfd, (struct sockaddr*) client_sockaddr, &clientaddr_length)) < 0) {
 
-	    fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection");
+	    fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection.\n");
 	    continue;
 
 	}
@@ -148,13 +149,19 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, thread_
 	SSL_set_fd(ssl, client_sockfd);
 	if (SSL_accept(ssl) <= 0) {
 
-	    fprintf(stderr, "There was an unexpected error while trying to perform an SSL handshake.");
+	    fprintf(stderr, "There was an unexpected error while trying to perform an SSL handshake.\n");
 	    continue;
 
 	}
 
+	/* Setup our virtual arguments for the thread we're going to create. */
+	controller_network_task_vargs_t *controller_network_task_vargs = (controller_network_task_vargs_t *) malloc(sizeof(controller_network_task_vargs_t));
+	controller_network_task_vargs->client_sockaddr = client_sockaddr;
+	controller_network_task_vargs->ssl = ssl;
+	controller_network_task_vargs->client_sockfd = client_sockfd;
+
 	/* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
-	
+	thread_pool_assign_task(network_thread_pool, controller_network_task, controller_network_task_vargs);
 
     }
 

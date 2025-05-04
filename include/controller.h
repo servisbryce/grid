@@ -17,4 +17,7 @@ typedef struct controller_network_task_vargs {
 
 } controller_network_task_vargs_t;
 
+/* We aim to provide a facility to handle controller network tasks on the server-side. */
+void *controller_network_task(void *controller_network_task_vargs_p);
+
 #endif

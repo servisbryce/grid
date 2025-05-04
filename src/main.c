@@ -126,6 +126,8 @@ int main(int argc, char **argv) {
     /* Branch if we're a controller or a worker. */
     if (!arguments.workerMode) {
 
+	printf("help\n");
+
         /* Create a socket. */
         int sockfd = create_socket(sockaddr, sockaddr_length, arguments.timeout);
 
@@ -166,10 +168,9 @@ int main(int argc, char **argv) {
 	/* If encryption is enabled, we should branch into a routine for an encrypted server. Otherwise, treat it like an ordinary plaintext connection. */
         if (ssl_context) {
 
-	    
+	    tls_server(ssl_context, network_thread_pool, sockfd);
 
 	} else {
-
 
 
 	}
@@ -180,6 +181,8 @@ int main(int argc, char **argv) {
         printf("Worker mode.\n");
 
     }
+
+    printf("we shouldnt reach this\n");
 
     /* Destroy the thread pools and exit the program. */
     if (task_thread_pool) {
