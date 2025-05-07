@@ -24,4 +24,7 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
 /* We aim to provide a facility to serialize network deferments. */
 char *serialize_net_defer(net_defer_t *net_defer);
 
+/* We aim to provide a facility to deserialize network deferments. */
+net_defer_t *deserialize_net_defer(char *serialized_net_defer);
+
 #endif

@@ -161,7 +161,7 @@ char *serialize_net_defer(net_defer_t *net_defer) {
     char *net_defer_type = "Type: net_defer_t\n";
 
     /* Assemble the content key and encoded value. */
-    char *net_defer_key = "Defer Time: ";
+    char *net_defer_key = "Time: ";
     size_t net_defer_length = 0;
     char *net_defer_value = encode(&net_defer->defer_time, sizeof(net_defer->defer_time), &net_defer_length);
 
@@ -400,8 +400,8 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
 
         }
 
-        /* If our defer time is set, then we'll set the defer time in our object accordingly. */
-        if (strcmp(type, "Defer Time") == 0) {
+        /* If our Time is set, then we'll set the Time in our object accordingly. */
+        if (strcmp(type, "Time") == 0) {
 
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
