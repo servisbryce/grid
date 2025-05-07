@@ -362,6 +362,7 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
     char *net_defer_serialized = strdup(serialized_net_defer);
 
     /* We'll also need to setup a line context because we'll be jumping from multiple different tokenization contexts within all branches of this function. */
+    net_defer_t *net_defer = NULL;
     char *line_context = NULL;
     char *current_line = strtok_r(net_defer_serialized, "\n", &line_context);
     while (current_line) {
@@ -383,7 +384,7 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
 
             if (strcmp(key, "net_defer_t") == 0) {
 
-                net_defer_serialized = (net_defer_t *) malloc(sizeof(net_defer_t));
+                net_defer = (net_defer_t *) malloc(sizeof(net_defer_t));
                 current_line = strtok_r(NULL, "\n", &line_context);
                 continue;
 
@@ -392,7 +393,7 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
         }
 
         /* We need to ensure that the object has been defined first, if not then we may encounter memory issues. */
-        if (!net_defer_serialized) {
+        if (!net_defer) {
 
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
@@ -404,7 +405,7 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
 
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
-            net_defer_serialized->defer_time = *decoded_value;
+            net_defer->defer_time = *decoded_value;
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
 
@@ -413,6 +414,6 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
     }
 
     /* Return our newly created structure. */
-    return net_defer_serialized;
+    return net_defer;
 
 }

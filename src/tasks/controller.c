@@ -23,26 +23,26 @@ void *controller_tls_network_task(void *thread_task_p) {
     }
 
     /* Retrieve our thread task virtual arguments. */
-    controller_network_task_vargs_t *controller_network_task_vargs = (controller_network_task_vargs_t *) thread_task->routine_vargs_p;
+    controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) thread_task->routine_vargs_p;
 
     /* If any heap allocated structures exist, we must destroy them or we'll have a major memory leak! */
-    if (controller_network_task_vargs->client_sockaddr) {
+    if (controller_tls_network_task_vargs->client_sockaddr) {
 
-        free(controller_network_task_vargs->client_sockaddr);
+        free(controller_tls_network_task_vargs->client_sockaddr);
 
     }
 
-    SSL_write(controller_network_task_vargs->ssl, "hi", 3);
-    if (controller_network_task_vargs->ssl) {
+    SSL_write(controller_tls_network_task_vargs->ssl, "hi", 3);
+    if (controller_tls_network_task_vargs->ssl) {
 
-        SSL_shutdown(controller_network_task_vargs->ssl);
-        SSL_free(controller_network_task_vargs->ssl);
+        SSL_shutdown(controller_tls_network_task_vargs->ssl);
+        SSL_free(controller_tls_network_task_vargs->ssl);
 
     }
 
     /* Finally, close the connection and free the structure. Then, return and let the thread be freed. */
-    close(controller_network_task_vargs->client_sockfd);
-    free(controller_network_task_vargs);
+    close(controller_tls_network_task_vargs->client_sockfd);
+    free(controller_tls_network_task_vargs);
     return (void *) thread_task;
 
 }
