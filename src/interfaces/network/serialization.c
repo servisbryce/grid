@@ -147,6 +147,43 @@ net_status_t *deserialize_net_status(char *serialized_net_status) {
 
 }
 
+/* We aim to provide a facility to serialize network deferment. */
+char *serialize_net_defer(net_defer_t *net_defer) {
+
+    /* Validate our parameters. */
+    if (!net_defer) {
+
+        return NULL;
+
+    }
+
+    /* Assemble the headers. */
+    char *net_defer_type = "Type: net_defer_t\n";
+
+    /* Assemble the content key and encoded value. */
+    char *net_defer_key = "Defer Time: ";
+    size_t net_defer_length = 0;
+    char *net_defer_value = encode(&net_defer->defer_time, sizeof(net_defer->defer_time), &net_defer_length);
+
+    /* Assemble the serialized network deferment message. */
+    char *serialized_net_defer = (char *) malloc(strlen(net_defer_type) + strlen(net_defer_key) + strlen(net_defer_value) + 2);
+    strcpy(serialized_net_defer, net_defer_type);
+    strcat(serialized_net_defer, net_defer_key);
+    strcat(serialized_net_defer, net_defer_value);
+    strcat(serialized_net_defer, "\n");
+
+    /* If we allocated memory for this value and we've reached this stage of the function, we don't need it anymore. So, destroy it. */
+    if (net_defer_value) {
+
+        free(net_defer_value);
+
+    }
+
+    /* Return the serialized network deferment message. */
+    return serialized_net_defer;
+
+}
+
 /* We aim to provide a facility to serialize network task requests.*/
 char *serialize_net_task_request(net_task_request_t *net_task_request) {
 
