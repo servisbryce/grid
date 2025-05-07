@@ -181,13 +181,6 @@ int main(int argc, char **argv) {
 
     }
 
-    net_defer_t net_defer = {0};
-    net_defer.defer_time = 5;
-    char *serialized_net_defer = serialize_net_defer(&net_defer);
-    printf("%s\n", serialized_net_defer);
-    net_defer_t *deserialized_net_defer = deserialize_net_defer(serialized_net_defer);
-    printf("Deserialized net_defer: %d\n", deserialized_net_defer->defer_time);
-
     /* Destroy the thread pools and exit the program. */
     if (task_thread_pool) {
 
