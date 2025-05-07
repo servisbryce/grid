@@ -347,3 +347,72 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
     return net_task_request;
 
 }
+
+/* We aim to provide a facility to deserialize a network deferment. */
+net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
+
+    /* Validate that our inputs aren't null to prevent a crash later on. */
+    if (!serialized_net_defer) {
+
+        return NULL;
+
+    }
+
+    /* Duplicate our original string because we'll be modifying this string during the translation process. */
+    char *net_defer_serialized = strdup(serialized_net_defer);
+
+    /* We'll also need to setup a line context because we'll be jumping from multiple different tokenization contexts within all branches of this function. */
+    char *line_context = NULL;
+    char *current_line = strtok_r(net_defer_serialized, "\n", &line_context);
+    while (current_line) {
+
+        /* Parse the type and key of the line. */
+        char *type = strtok(current_line, ": ");
+        char *key = strtok(NULL, ": ");
+
+        /* If one or the other don't exist, then halt immediately as this line is corrupted. */
+        if (!type || !key) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
+
+        }
+
+        /* Check if the structure we want to create is defined. If so, then create it. */
+        if (strcmp(type, "Type") == 0) {
+
+            if (strcmp(key, "net_defer_t") == 0) {
+
+                net_defer_serialized = (net_defer_t *) malloc(sizeof(net_defer_t));
+                current_line = strtok_r(NULL, "\n", &line_context);
+                continue;
+
+            }
+
+        }
+
+        /* We need to ensure that the object has been defined first, if not then we may encounter memory issues. */
+        if (!net_defer_serialized) {
+
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
+
+        }
+
+        /* If our defer time is set, then we'll set the defer time in our object accordingly. */
+        if (strcmp(type, "Defer Time") == 0) {
+
+            size_t decoded_value_length = 0;
+            size_t *decoded_value = decode(key, &decoded_value_length);
+            net_defer_serialized->defer_time = *decoded_value;
+            current_line = strtok_r(NULL, "\n", &line_context);
+            continue;
+
+        }
+
+    }
+
+    /* Return our newly created structure. */
+    return net_defer_serialized;
+
+}
