@@ -37,6 +37,13 @@ typedef struct net_status {
 
 } net_status_t;
 
+/* You are to use this to tell a client to go away for a specified amount of time because there aren't any tasks for them to do. */
+typedef struct net_defer {
+
+    int defer_time;
+
+} net_defer_t;
+
 /* We aim to provide facilities to destroy various structures. */
 int destroy_net_task_request(net_task_request_t *net_task_request);
 int destroy_net_task_response(net_task_response_t *net_task_response);

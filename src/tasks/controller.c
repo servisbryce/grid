@@ -18,7 +18,7 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* Ensure that the arguments the thread was provide actually exists. */
     if (!thread_task) {
 
-	return (void *) -1;
+        return (void *) -1;
 
     }
 
@@ -28,15 +28,15 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* If any heap allocated structures exist, we must destroy them or we'll have a major memory leak! */
     if (controller_network_task_vargs->client_sockaddr) {
 
-	free(controller_network_task_vargs->client_sockaddr);
+        free(controller_network_task_vargs->client_sockaddr);
 
     }
 
     SSL_write(controller_network_task_vargs->ssl, "hi", 3);
     if (controller_network_task_vargs->ssl) {
 
-	SSL_shutdown(controller_network_task_vargs->ssl);
-	SSL_free(controller_network_task_vargs->ssl);
+        SSL_shutdown(controller_network_task_vargs->ssl);
+        SSL_free(controller_network_task_vargs->ssl);
 
     }
 
