@@ -228,7 +228,7 @@ char *serialize_net_task_request(net_task_request_t *net_task_request) {
     strcat(serialized_net_task_request, net_task_request_routine_arguments_value);
     strcat(serialized_net_task_request, newline);
 
-    /* If we allocated memory for these values and we've reached this stage of the function, we don't need them anymore. So, destroy it. */
+    /* If we allocated memory for these values and we've reached this stage of the function, we don't need them anymore. So, destroy it! */
     if (net_task_request_identifier_value) {
 
         free(net_task_request_identifier_value);
@@ -312,6 +312,7 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
             net_task_request->identifier = *decoded_value;
+            free(decoded_value);
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
 
@@ -333,9 +334,13 @@ net_task_request_t *deserialize_net_task_request(char *serialized_net_task_reque
         if (strcmp(type, "Routine Arguments") == 0) {
 
             size_t decoded_value_length = 0;
+
+            /* We cannot free this data because it's not a dereferenced value. */
             char *decoded_value = decode(key, &decoded_value_length);
-            net_task_request->routine_file_length = decoded_value_length;
-            net_task_request->routine_file = (void *) decoded_value;
+            net_task_request->routine_arguments_length = decoded_value_length;
+            net_task_request->routine_arguments = (void *) decoded_value;
+
+            /* Move on. */
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
 
@@ -403,9 +408,15 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
         /* If our Time is set, then we'll set the Time in our object accordingly. */
         if (strcmp(type, "Time") == 0) {
 
+            /* Decode the data. */
             size_t decoded_value_length = 0;
             size_t *decoded_value = decode(key, &decoded_value_length);
+
+            /* Dereference pointer and destroy the duplicate data. */
             net_defer->defer_time = *decoded_value;
+            free(decoded_value);
+
+            /* Move on. */
             current_line = strtok_r(NULL, "\n", &line_context);
             continue;
 
