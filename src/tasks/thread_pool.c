@@ -49,7 +49,7 @@ void *thread_worker(void *thread_worker_vargs_p) {
         if (thread_task) {
 
             /* Execute the function. The function then shall return the same thread task structure but with the return buffer pointer and length set. */
-            thread_task = thread_task->routine((void *) thread_task);
+            thread_task = (thread_task_t *) thread_task->routine((void *) thread_task);
 
             /* If the thread task head is marked as null, we'll set it here. Otherwise, push the thread task head. */
             pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));

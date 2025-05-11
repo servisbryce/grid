@@ -32,7 +32,13 @@ void *controller_tls_network_task(void *thread_task_p) {
 
     }
 
-    SSL_write(controller_tls_network_task_vargs->ssl, "hi", 3);
+    /*
+    
+        Implement our connection handler!!!
+    
+    */
+
+    /* Clean up our SSL connection. */
     if (controller_tls_network_task_vargs->ssl) {
 
         SSL_shutdown(controller_tls_network_task_vargs->ssl);
