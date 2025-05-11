@@ -51,28 +51,32 @@ void *thread_worker(void *thread_worker_vargs_p) {
             /* Execute the function. The function then shall return the same thread task structure but with the return buffer pointer and length set. */
             thread_task = (thread_task_t *) thread_task->routine((void *) thread_task);
 
-            /* If the thread task head is marked as null, we'll set it here. Otherwise, push the thread task head. */
-            pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
-            if (!thread_pool->thread_task_head_completed) {
+            /* If we've received an empty value back from the function, that indicates that the function has destroyed the thread task structure for us as it is no longer necessary. Thus, we don't need to run the code below as its redundant. The thread task structure is typically set to null when working with our networking thread pool. */
+            if (thread_task != NULL) {
 
-                thread_pool->thread_task_head_completed = thread_task;
-                
-            } else {
+                pthread_mutex_lock(&(thread_pool->thread_task_head_completed_mutex));
+                if (!thread_pool->thread_task_head_completed) {
 
-                thread_task_t *thread_task_tail_completed = thread_pool->thread_task_head_completed;
-                while (thread_task_tail_completed->next) {
+                    thread_pool->thread_task_head_completed = thread_task;
+                    
+                } else {
 
-                    thread_task_tail_completed = thread_task_tail_completed->next;
+                    thread_task_t *thread_task_tail_completed = thread_pool->thread_task_head_completed;
+                    while (thread_task_tail_completed->next) {
+
+                        thread_task_tail_completed = thread_task_tail_completed->next;
+
+                    }
+            
+                    thread_task_tail_completed->next = thread_task;
+                    thread_task->next = NULL;
 
                 }
-        
-                thread_task_tail_completed->next = thread_task;
-                thread_task->next = NULL;
+
+                pthread_mutex_unlock(&(thread_pool->thread_task_head_completed_mutex));
+                pthread_cond_broadcast(&(thread_pool->thread_task_head_completed_condition));
 
             }
-
-            pthread_mutex_unlock(&(thread_pool->thread_task_head_completed_mutex));
-            pthread_cond_broadcast(&(thread_pool->thread_task_head_completed_condition));
 
         }
 

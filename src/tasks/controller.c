@@ -34,7 +34,7 @@ void *controller_tls_network_task(void *thread_task_p) {
 
     /*
     
-        Implement our connection handler!!!
+        Implement our connection handler
     
     */
 
@@ -49,6 +49,7 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* Finally, close the connection and free the structure. Then, return and let the thread be freed. */
     close(controller_tls_network_task_vargs->client_sockfd);
     free(controller_tls_network_task_vargs);
-    return (void *) thread_task;
+    free(thread_task);
+    return NULL;
 
 }

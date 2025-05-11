@@ -13,6 +13,7 @@
 /* This structure defines a task which will be plucked from the thread pool and executed. */
 typedef struct thread_task {
 
+    /* Identification and linked list variables. */
     struct thread_task *next;
     size_t identifier;
 
