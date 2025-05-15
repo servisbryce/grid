@@ -26,7 +26,18 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* Retrieve our thread task virtual arguments. */
     controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) thread_task->routine_vargs_p;
 
-    
+    /* Lock the mutex. */
+    pthread_mutex_lock(&controller_tls_network_task_vargs->task_list->pending_tasks_mutex);
+
+    /* Check if the pending task list is emptied. */
+    if (!controller_tls_network_task_vargs->task_list->pending_tasks) {
+
+        
+
+    }
+
+    /* Release the mutex. */
+    pthread_mutex_unlock(&controller_tls_network_task_vargs->task_list->pending_tasks_mutex);
 
     /* If any heap allocated structures exist, we must destroy them or we'll have a major memory leak! */
     if (controller_tls_network_task_vargs->client_sockaddr) {
