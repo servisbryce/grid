@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
 
             /* Populate a necessary structure that we'll rely on later. */
             task_list = (task_list_t *) malloc(sizeof(struct task_list));
-            pthread_mutex_init(&task_list->pending_tasks_mutex, NULL)
+            pthread_mutex_init(&task_list->pending_tasks_mutex, NULL);
             task_list->pending_tasks = NULL;
             tls_server(ssl_context, network_thread_pool, sockfd, task_list);
 
