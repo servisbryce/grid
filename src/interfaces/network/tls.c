@@ -119,10 +119,10 @@ SSL_CTX *create_ssl_client_context(char *certificate_file_path, char *private_ke
 }
 
 /* We aim to provide a facility to handle incoming connections on the server-side. */
-int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int sockfd) {
+int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int sockfd, task_list_t *task_list) {
 
     /* Ensure our inputs aren't null. */
-    if (!ssl_context || !network_thread_pool || sockfd < 0) {
+    if (!ssl_context || !network_thread_pool || sockfd < 0 || !task_list) {
 
         return -1;
 
@@ -156,6 +156,7 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int soc
 
         /* Setup our virtual arguments for the thread we're going to create. */
         controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) malloc(sizeof(controller_tls_network_task_vargs_t));
+        controller_tls_network_task_vargs->task_list = task_list;
         controller_tls_network_task_vargs->client_sockaddr = client_sockaddr;
         controller_tls_network_task_vargs->ssl = ssl;
         controller_tls_network_task_vargs->client_sockfd = client_sockfd;

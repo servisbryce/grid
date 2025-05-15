@@ -10,7 +10,7 @@
 #include "stddef.h"
 #include "stdbool.h"
 
-/* If you are the worker, you are going to receive this structure in serialized form over the socket. You are to deserialize it and you should find the result to be this structure. */
+/* If you are the controller, you will send this to a client to request them to execute a task. */
 typedef struct net_task_request {
 
     size_t identifier;

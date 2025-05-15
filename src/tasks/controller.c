@@ -6,6 +6,7 @@
 
 #include "../../include/thread_pool.h"
 #include "../../include/controller.h"
+#include <pthread.h>
 #include <openssl/err.h>
 #include <unistd.h>
 
@@ -25,14 +26,14 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* Retrieve our thread task virtual arguments. */
     controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) thread_task->routine_vargs_p;
 
+    
+
     /* If any heap allocated structures exist, we must destroy them or we'll have a major memory leak! */
     if (controller_tls_network_task_vargs->client_sockaddr) {
 
         free(controller_tls_network_task_vargs->client_sockaddr);
 
     }
-
-    
 
     /* Clean up our SSL connection. */
     if (controller_tls_network_task_vargs->ssl) {
