@@ -162,8 +162,9 @@ char *serialize_net_defer(net_defer_t *net_defer) {
 
     /* Assemble the content key and encoded value. */
     char *net_defer_key = "Time: ";
-    size_t net_defer_length = 0;
-    char *net_defer_value = encode(&net_defer->defer_time, sizeof(net_defer->defer_time), &net_defer_length);
+    int time_digits = snprintf(NULL, 0, "%d", net_defer->defer_time);
+    char net_defer_value[time_digits + 1];
+    snprintf(net_defer_value, time_digits + 1, "%d", net_defer->defer_time);
 
     /* Assemble the serialized network deferment message. */
     char *serialized_net_defer = (char *) malloc(strlen(net_defer_type) + strlen(net_defer_key) + strlen(net_defer_value) + 2);
@@ -171,13 +172,6 @@ char *serialize_net_defer(net_defer_t *net_defer) {
     strcat(serialized_net_defer, net_defer_key);
     strcat(serialized_net_defer, net_defer_value);
     strcat(serialized_net_defer, "\n");
-
-    /* If we allocated memory for this value and we've reached this stage of the function, we don't need it anymore. So, destroy it. */
-    if (net_defer_value) {
-
-        free(net_defer_value);
-
-    }
 
     /* Return the serialized network deferment message. */
     return serialized_net_defer;

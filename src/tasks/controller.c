@@ -4,8 +4,10 @@
 
 */
 
+#include "../../include/serialization.h"
 #include "../../include/thread_pool.h"
 #include "../../include/controller.h"
+#include "../../include/network.h"
 #include <pthread.h>
 #include <openssl/err.h>
 #include <unistd.h>
@@ -32,12 +34,23 @@ void *controller_tls_network_task(void *thread_task_p) {
     /* Check if the pending task list is emptied. */
     if (!controller_tls_network_task_vargs->task_list->pending_tasks) {
 
-        
+        /* We're able to release the mutex here instantly because we aren't reliant on it. Minor performance improvement. */
+        pthread_mutex_unlock(&controller_tls_network_task_vargs->task_list->pending_tasks_mutex);
+
+        /* Tell them to go away for sixty seconds. */
+        net_defer_t *net_defer = (net_defer_t *) malloc(sizeof(struct net_defer));
+        net_defer->defer_time = 60;
+        char *response = serialize_net_defer(net_defer);
+        free(net_defer);
+        SSL_write(controller_tls_network_task_vargs->ssl, response, strlen(response) + 1);
+        free(response);
+
+    } else {
+
+        /* Ensure that the mutex is released regardless of the branches.*/
+        pthread_mutex_unlock(&controller_tls_network_task_vargs->task_list->pending_tasks_mutex);
 
     }
-
-    /* Release the mutex. */
-    pthread_mutex_unlock(&controller_tls_network_task_vargs->task_list->pending_tasks_mutex);
 
     /* If any heap allocated structures exist, we must destroy them or we'll have a major memory leak! */
     if (controller_tls_network_task_vargs->client_sockaddr) {
