@@ -403,12 +403,7 @@ net_defer_t *deserialize_net_defer(char *serialized_net_defer) {
         if (strcmp(type, "Time") == 0) {
 
             /* Decode the data. */
-            size_t decoded_value_length = 0;
-            size_t *decoded_value = decode(key, &decoded_value_length);
-
-            /* Dereference pointer and destroy the duplicate data. */
-            net_defer->defer_time = *decoded_value;
-            free(decoded_value);
+            net_defer->defer_time = (int) strtol(key, NULL, 10);
 
             /* Move on. */
             current_line = strtok_r(NULL, "\n", &line_context);
