@@ -124,44 +124,44 @@ int tls_server(SSL_CTX *ssl_context, thread_pool_t *network_thread_pool, int soc
     /* Ensure our inputs aren't null. */
     if (!ssl_context || !network_thread_pool || sockfd < 0) {
 
-	return -1;
+        return -1;
 
     }
 
     /* We are to handle connections forever until the program is killed or we break out of this loop. */
     while (1) {
 
-	/* Prepare our structure to retain the information of the client that just connected for use later. */
-	unsigned int clientaddr_length = sizeof(struct sockaddr_in);
-	struct sockaddr_in *client_sockaddr = (struct sockaddr_in *) malloc(clientaddr_length);
+        /* Prepare our structure to retain the information of the client that just connected for use later. */
+        unsigned int clientaddr_length = sizeof(struct sockaddr_in);
+        struct sockaddr_in *client_sockaddr = (struct sockaddr_in *) malloc(clientaddr_length);
 
-	/* Handle an incoming connection and store the file descriptor for it. */
-	int client_sockfd;
-	if ((client_sockfd = accept(sockfd, (struct sockaddr*) client_sockaddr, &clientaddr_length)) < 0) {
+        /* Handle an incoming connection and store the file descriptor for it. */
+        int client_sockfd;
+        if ((client_sockfd = accept(sockfd, (struct sockaddr*) client_sockaddr, &clientaddr_length)) < 0) {
 
-	    fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection.\n");
-	    continue;
+            fprintf(stderr, "There was an unexpected error while trying to handle an incoming connection.\n");
+            continue;
 
-	}
+        }
 
-	/* Perform a handshake to encrypt the connection. */
-	SSL *ssl = SSL_new(ssl_context);
-	SSL_set_fd(ssl, client_sockfd);
-	if (SSL_accept(ssl) <= 0) {
+        /* Perform a handshake to encrypt the connection. */
+        SSL *ssl = SSL_new(ssl_context);
+        SSL_set_fd(ssl, client_sockfd);
+        if (SSL_accept(ssl) <= 0) {
 
-	    fprintf(stderr, "There was an unexpected error while trying to perform an SSL handshake.\n");
-	    continue;
+            fprintf(stderr, "There was an unexpected error while trying to perform an SSL handshake.\n");
+            continue;
 
-	}
+        }
 
-	/* Setup our virtual arguments for the thread we're going to create. */
-	controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) malloc(sizeof(controller_tls_network_task_vargs_t));
-	controller_tls_network_task_vargs->client_sockaddr = client_sockaddr;
-	controller_tls_network_task_vargs->ssl = ssl;
-	controller_tls_network_task_vargs->client_sockfd = client_sockfd;
+        /* Setup our virtual arguments for the thread we're going to create. */
+        controller_tls_network_task_vargs_t *controller_tls_network_task_vargs = (controller_tls_network_task_vargs_t *) malloc(sizeof(controller_tls_network_task_vargs_t));
+        controller_tls_network_task_vargs->client_sockaddr = client_sockaddr;
+        controller_tls_network_task_vargs->ssl = ssl;
+        controller_tls_network_task_vargs->client_sockfd = client_sockfd;
 
-	/* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
-	thread_pool_assign_task(network_thread_pool, controller_tls_network_task, controller_tls_network_task_vargs);
+        /* Once we've setup the connection, we're going to delegate it to another thread so we may handle concurrent connections. */
+        thread_pool_assign_task(network_thread_pool, controller_tls_network_task, controller_tls_network_task_vargs);
 
     }
 

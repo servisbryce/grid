@@ -32,11 +32,7 @@ void *controller_tls_network_task(void *thread_task_p) {
 
     }
 
-    /*
     
-        Implement our connection handler
-    
-    */
 
     /* Clean up our SSL connection. */
     if (controller_tls_network_task_vargs->ssl) {
